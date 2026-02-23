@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - ShuleAI</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/student.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="student-dashboard">
+    <!-- Authentication Check -->
+    <script>
+        // Check if student is logged in
+        if (!localStorage.getItem('studentLoggedIn')) {
+            window.location.href = 'student.html';
+        }
+        
+        // Load student data
+        const studentData = {
+            name: localStorage.getItem('studentName') || 'Emma Smith',
+            id: localStorage.getItem('studentId') || 'STU001',
+            grade: localStorage.getItem('studentGrade') || 'Grade 10A',
+            section: 'A',
+            school: 'Greenwood High School'
+        };
+    </script>
+
+    <!-- Top Navigation -->
+    <nav class="student-nav">
+        <div class="nav-left">
+            <div class="logo">
+                <i class="fas fa-user-graduate"></i>
+                <div>
+                    <h2>Shule<span class="ai">AI</span> Student</h2>
+                    <p class="role-tag">Learning Dashboard</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-center">
+            <div class="student-info">
+                <i class="fas fa-graduation-cap"></i>
+                <div>
+                    <h3 id="studentNameDisplay">Emma Smith</h3>
+                    <p id="studentInfoDisplay">Grade 10A • Student ID: STU001</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <div class="ai-assistant-btn" id="aiAssistantBtn">
+                <i class="fas fa-robot"></i>
+                <span>AI Assistant</span>
+                <span class="badge" id="aiNotificationCount">3</span>
+            </div>
+            <div class="peer-chat-btn" id="peerChatBtn">
+                <i class="fas fa-comments"></i>
+                <span>Peer Chat</span>
+                <span class="badge" id="chatNotificationCount">2</span>
+            </div>
+            <div class="student-profile" id="studentProfile">
+                <img src="https://ui-avatars.com/api/?name=Emma+Smith&background=06D6A0&color=fff" alt="Student">
+                <div class="profile-info">
+                    <span class="student-name" id="navStudentName">Emma Smith</span>
+                    <span class="student-grade">Grade 10A</span>
+                </div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <button class="btn-logout" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- AI Assistant Panel -->
+    <div class="ai-assistant-panel" id="aiAssistantPanel" style="display: none;">
+        <div class="panel-header">
+            <div class="ai-header">
+                <div class="ai-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="ai-info">
+                    <h3>AI Learning Assistant</h3>
+                    <p>Ready to help with your studies!</p>
+                </div>
+                <button class="panel-close">&times;</button>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="ai-chat-container" id="aiChatContainer">
+                <!-- AI Chat messages will be loaded here -->
+            </div>
+            <div class="ai-input-area">
+                <input type="text" id="aiMessageInput" placeholder="Ask me anything about your studies...">
+                <button id="sendAiMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="quick-questions">
+                <button class="quick-question" data-question="Explain photosynthesis">Photosynthesis</button>
+                <button class="quick-question" data-question="Help with math homework">Math Help</button>
+                <button class="quick-question" data-question="Science project ideas">Projects</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Peer Chat Panel -->
+    <div class="peer-chat-panel" id="peerChatPanel" style="display: none;">
+        <div class="panel-header">
+            <div class="chat-header">
+                <div class="chat-info">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <h3>Peer Learning Chat</h3>
+                        <p>Connect with classmates</p>
+                    </div>
+                </div>
+                <button class="panel-close">&times;</button>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="online-students" id="onlineStudents">
+                <!-- Online students will be loaded here -->
+            </div>
+            <div class="chat-container">
+                <div class="chat-messages" id="peerChatMessages">
+                    <!-- Chat messages will be loaded here -->
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="peerMessageInput" placeholder="Message your classmates...">
+                    <button id="sendPeerMessage">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4><i class="fas fa-tachometer-alt"></i> DASHBOARD</h4>
+                    <a href="#" class="menu-item active" data-section="overview">
+                        <i class="fas fa-home"></i> Learning Overview
+                    </a>
+                    <a href="#" class="menu-item" data-section="progress">
+                        <i class="fas fa-chart-line"></i> My Progress
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-graduation-cap"></i> ACADEMICS</h4>
+                    <a href="#" class="menu-item" data-section="grades">
+                        <i class="fas fa-percentage"></i> My Grades
+                        <span class="badge success" id="gradesUpdated">Updated</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="attendance">
+                        <i class="fas fa-calendar-check"></i> Attendance
+                        <span class="badge" id="attendancePercent">94%</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="subjects">
+                        <i class="fas fa-book"></i> Subjects
+                        <span class="badge">6</span>
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-book-open"></i> LEARNING</h4>
+                    <a href="#" class="menu-item" data-section="materials">
+                        <i class="fas fa-file-alt"></i> Study Materials
+                        <span class="badge" id="materialCount">12</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="assignments">
+                        <i class="fas fa-tasks"></i> Assignments
+                        <span class="badge warning" id="pendingAssignments">3</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="resources">
+                        <i class="fas fa-database"></i> Resources
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-comments"></i> INTERACTION</h4>
+                    <a href="#" class="menu-item" data-section="ai-assistant">
+                        <i class="fas fa-robot"></i> AI Assistant
+                        <span class="badge info" id="aiMessages">3</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="peer-chat">
+                        <i class="fas fa-users"></i> Peer Chat
+                        <span class="badge" id="peerMessages">5</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="study-groups">
+                        <i class="fas fa-user-friends"></i> Study Groups
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-bell"></i> NOTIFICATIONS</h4>
+                    <a href="#" class="menu-item" data-section="alerts">
+                        <i class="fas fa-bell"></i> Alerts
+                        <span class="badge warning" id="alertCount">2</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="reminders">
+                        <i class="fas fa-clock"></i> Reminders
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-cog"></i> SETTINGS</h4>
+                    <a href="#" class="menu-item" data-section="profile">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                    <a href="#" class="menu-item" data-section="preferences">
+                        <i class="fas fa-sliders-h"></i> Preferences
+                    </a>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="study-status">
+                    <i class="fas fa-circle status-online"></i>
+                    <span>Study Status: <strong>Active</strong></span>
+                </div>
+                <a href="../index.html" class="back-to-home">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="welcome-content">
+                    <h1>Welcome back, <span id="welcomeStudentName">Emma</span>!</h1>
+                    <p>Ready to learn, interact, and grow today</p>
+                    <div class="motivation-quote">
+                        <i class="fas fa-quote-left"></i>
+                        <span id="dailyMotivation">The beautiful thing about learning is that no one can take it away from you.</span>
+                        <i class="fas fa-quote-right"></i>
+                    </div>
+                </div>
+                <div class="welcome-actions">
+                    <button class="btn-primary" id="startLearningBtn">
+                        <i class="fas fa-play"></i> Start Learning
+                    </button>
+                    <button class="btn-secondary" id="viewScheduleBtn">
+                        <i class="fas fa-calendar"></i> Today's Schedule
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-icon overall-grade">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="overallGrade">B+</h3>
+                        <p>Overall Grade</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> <span id="gradeTrend">+2%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon attendance">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="attendanceRate">94%</h3>
+                        <p>Attendance Rate</p>
+                    </div>
+                    <div class="stat-trend stable">
+                        <i class="fas fa-minus"></i> <span id="attendanceTrend">No change</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon assignments">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pendingAssignmentsCount">3</h3>
+                        <p>Pending Assignments</p>
+                    </div>
+                    <div class="stat-trend warning">
+                        <i class="fas fa-exclamation"></i> <span id="assignmentAlert">Due Soon</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon study-time">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="studyHours">12.5</h3>
+                        <p>Study Hours (Week)</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> <span id="studyTrend">+3.2h</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Learning Center -->
+            <div class="learning-center">
+                <div class="section-header">
+                    <h3><i class="fas fa-brain"></i> Learning Center</h3>
+                    <div class="section-actions">
+                        <button class="btn-primary" id="exploreMaterials">
+                            <i class="fas fa-search"></i> Explore
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="learning-grid">
+                    <div class="learning-card" id="aiAssistantCard">
+                        <div class="learning-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="learning-content">
+                            <h4>AI Learning Assistant</h4>
+                            <p>Get instant help with homework and concepts</p>
+                            <div class="learning-stats">
+                                <span><i class="fas fa-comment"></i> 15 conversations</span>
+                                <span><i class="fas fa-check-circle"></i> 92% helpful</span>
+                            </div>
+                        </div>
+                        <button class="btn-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="learning-card" id="studyMaterialsCard">
+                        <div class="learning-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="learning-content">
+                            <h4>Study Materials</h4>
+                            <p>Access notes, presentations, and resources</p>
+                            <div class="learning-stats">
+                                <span><i class="fas fa-file"></i> 12 new materials</span>
+                                <span><i class="fas fa-download"></i> 8 downloaded</span>
+                            </div>
+                        </div>
+                        <button class="btn-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="learning-card" id="peerLearningCard">
+                        <div class="learning-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="learning-content">
+                            <h4>Peer Learning</h4>
+                            <p>Connect with classmates and study together</p>
+                            <div class="learning-stats">
+                                <span><i class="fas fa-user-friends"></i> 8 online</span>
+                                <span><i class="fas fa-comments"></i> 3 active groups</span>
+                            </div>
+                        </div>
+                        <button class="btn-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="learning-card" id="assignmentsCard">
+                        <div class="learning-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="learning-content">
+                            <h4>Assignments</h4>
+                            <p>View and submit assignments</p>
+                            <div class="learning-stats">
+                                <span><i class="fas fa-clock"></i> 3 pending</span>
+                                <span><i class="fas fa-check"></i> 8 completed</span>
+                            </div>
+                        </div>
+                        <button class="btn-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Performance -->
+            <div class="performance-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-chart-bar"></i> Academic Performance</h3>
+                    <div class="section-actions">
+                        <select id="performanceTerm">
+                            <option value="current">Current Term</option>
+                            <option value="term1">Term 1</option>
+                            <option value="term2">Term 2</option>
+                        </select>
+                        <button class="btn-secondary" id="exportPerformance">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="performance-container">
+                    <div class="grades-summary">
+                        <h4>Subject Grades</h4>
+                        <div class="grades-list" id="gradesList">
+                            <!-- Grades will be loaded here -->
+                        </div>
+                        <div class="summary-footer">
+                            <a href="#" class="card-link" id="viewDetailedGrades">
+                                View Detailed Grades <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-chart-container">
+                        <h4>Progress Over Time</h4>
+                        <div class="progress-chart" id="progressChart">
+                            <!-- Progress chart will be loaded here -->
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-color math"></span>
+                                <span>Mathematics</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color science"></span>
+                                <span>Science</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color english"></span>
+                                <span>English</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Schedule -->
+            <div class="schedule-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-calendar-day"></i> Today's Schedule</h3>
+                    <button class="btn-secondary" id="fullScheduleBtn">
+                        <i class="fas fa-calendar-alt"></i> Full Schedule
+                    </button>
+                </div>
+                
+                <div class="schedule-timeline" id="todaySchedule">
+                    <!-- Schedule items will be loaded here -->
+                </div>
+                
+                <div class="upcoming-deadlines">
+                    <h4><i class="fas fa-exclamation-circle"></i> Upcoming Deadlines</h4>
+                    <div class="deadlines-list" id="deadlinesList">
+                        <!-- Deadlines will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Study Materials -->
+            <div class="materials-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-book"></i> Recent Study Materials</h3>
+                    <a href="#" class="view-all" id="viewAllMaterials">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="materials-grid" id="materialsGrid">
+                    <!-- Materials will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Learning Tips -->
+            <div class="tips-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-lightbulb"></i> Learning Tips</h3>
+                    <button class="btn-secondary" id="refreshTipsBtn">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                </div>
+                
+                <div class="tips-carousel" id="tipsCarousel">
+                    <!-- Tips will be loaded here -->
+                </div>
+                
+                <div class="study-techniques">
+                    <h4><i class="fas fa-graduation-cap"></i> Effective Study Techniques</h4>
+                    <div class="techniques-list">
+                        <div class="technique">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h5>Pomodoro Technique</h5>
+                                <p>Study for 25 minutes, break for 5</p>
+                            </div>
+                        </div>
+                        <div class="technique">
+                            <i class="fas fa-brain"></i>
+                            <div>
+                                <h5>Active Recall</h5>
+                                <p>Test yourself instead of re-reading</p>
+                            </div>
+                        </div>
+                        <div class="technique">
+                            <i class="fas fa-project-diagram"></i>
+                            <div>
+                                <h5>Spaced Repetition</h5>
+                                <p>Review material at increasing intervals</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Profile Dropdown -->
+    <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+        <div class="dropdown-item">
+            <i class="fas fa-user"></i>
+            <span>My Profile</span>
+        </div>
+        <div class="dropdown-item">
+            <i class="fas fa-chart-line"></i>
+            <span>Progress Reports</span>
+        </div>
+        <div class="dropdown-item">
+            <i class="fas fa-trophy"></i>
+            <span>Achievements</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item" id="logoutOption">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </div>
+    </div>
+
+    <!-- Study Materials Modal -->
+    <div class="modal-overlay" id="materialsModal" style="display: none;">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3><i class="fas fa-book-open"></i> Study Materials</h3>
+                <button class="modal-close" id="materialsModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="materials-library" id="materialsLibrary">
+                    <!-- Full materials library will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignment Modal -->
+    <div class="modal-overlay" id="assignmentModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-tasks"></i> Assignment Details</h3>
+                <button class="modal-close" id="assignmentModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="assignment-details" id="assignmentDetails">
+                    <!-- Assignment details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Modal -->
+    <div class="modal-overlay" id="scheduleModal" style="display: none;">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-alt"></i> Weekly Schedule</h3>
+                <button class="modal-close" id="scheduleModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="weekly-schedule" id="weeklySchedule">
+                    <!-- Weekly schedule will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grades Modal -->
+    <div class="modal-overlay" id="gradesModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-percentage"></i> Detailed Grades</h3>
+                <button class="modal-close" id="gradesModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="grades-details" id="gradesDetails">
+                    <!-- Detailed grades will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/student.js"></script>
+    <script>
+        // ==================== STUDENT DASHBOARD SCRIPT ====================
+        (function() {
+            'use strict';
+            
+            // Student Dashboard Module
+            const StudentDashboard = {
+                // Configuration
+                config: {
+                    sessionTimeout: 30 * 60 * 1000,
+                    autoSaveInterval: 30000,
+                    demoMode: true,
+                    subjects: [
+                        { name: "Mathematics", grade: "A", marks: 85, teacher: "Mr. Johnson", trend: "up" },
+                        { name: "Science", grade: "B+", marks: 82, teacher: "Ms. Williams", trend: "stable" },
+                        { name: "English", grade: "A-", marks: 88, teacher: "Mrs. Brown", trend: "up" },
+                        { name: "History", grade: "B", marks: 78, teacher: "Mr. Davis", trend: "down" },
+                        { name: "Geography", grade: "B+", marks: 80, teacher: "Ms. Taylor", trend: "stable" },
+                        { name: "Computer Science", grade: "A", marks: 92, teacher: "Mr. Wilson", trend: "up" }
+                    ]
+                },
+                
+                // State management
+                state: {
+                    initialized: false,
+                    studentData: {},
+                    aiMessages: [],
+                    peerMessages: [],
+                    studyMaterials: [],
+                    assignments: [],
+                    schedule: [],
+                    learningTips: []
+                },
+                
+                // Initialize dashboard
+                init: function() {
+                    if (this.state.initialized) return;
+                    
+                    this.checkAuth();
+                    this.loadStudentData();
+                    this.setupEventListeners();
+                    this.loadDashboardData();
+                    this.renderDashboard();
+                    this.startAutoSave();
+                    this.startSessionTimer();
+                    
+                    this.state.initialized = true;
+                    console.log('Student Dashboard initialized');
+                },
+                
+                // Check authentication
+                checkAuth: function() {
+                    if (!localStorage.getItem('studentLoggedIn')) {
+                        window.location.href = 'student.html';
+                        return false;
+                    }
+                    return true;
+                },
+                
+                // Load student data
+                loadStudentData: function() {
+                    // Get data from localStorage or use defaults
+                    this.state.studentData = {
+                        name: localStorage.getItem('studentName') || 'Emma Smith',
+                        id: localStorage.getItem('studentId') || 'STU001',
+                        grade: localStorage.getItem('studentGrade') || 'Grade 10A',
+                        section: 'A',
+                        school: 'Greenwood High School'
+                    };
+                    
+                    // Update UI with student info
+                    this.updateStudentInfo();
+                },
+                
+                // Update student info in UI
+                updateStudentInfo: function() {
+                    const student = this.state.studentData;
+                    
+                    document.getElementById('studentNameDisplay').textContent = student.name;
+                    document.getElementById('studentInfoDisplay').textContent = `${student.grade} • Student ID: ${student.id}`;
+                    document.getElementById('navStudentName').textContent = student.name;
+                    document.getElementById('welcomeStudentName').textContent = student.name.split(' ')[0];
+                },
+                
+                // Setup event listeners
+                setupEventListeners: function() {
+                    // Logout buttons
+                    document.getElementById('logoutBtn').addEventListener('click', this.logout.bind(this));
+                    document.getElementById('logoutOption').addEventListener('click', this.logout.bind(this));
+                    
+                    // Profile dropdown
+                    document.getElementById('studentProfile').addEventListener('click', this.toggleProfileDropdown.bind(this));
+                    
+                    // AI Assistant
+                    document.getElementById('aiAssistantBtn').addEventListener('click', this.toggleAiPanel.bind(this));
+                    document.getElementById('aiAssistantCard').addEventListener('click', this.openAiAssistant.bind(this));
+                    
+                    // Peer Chat
+                    document.getElementById('peerChatBtn').addEventListener('click', this.togglePeerPanel.bind(this));
+                    document.getElementById('peerLearningCard').addEventListener('click', this.openPeerChat.bind(this));
+                    
+                    // Panel close buttons
+                    document.querySelectorAll('.panel-close').forEach(btn => {
+                        btn.addEventListener('click', this.closePanels.bind(this));
+                    });
+                    
+                    // Menu items
+                    document.querySelectorAll('.menu-item').forEach(item => {
+                        item.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const section = item.getAttribute('data-section');
+                            this.handleMenuClick(section, item);
+                        });
+                    });
+                    
+                    // Action buttons
+                    document.getElementById('startLearningBtn').addEventListener('click', this.startLearningSession.bind(this));
+                    document.getElementById('viewScheduleBtn').addEventListener('click', this.openScheduleModal.bind(this));
+                    document.getElementById('exploreMaterials').addEventListener('click', this.openMaterialsModal.bind(this));
+                    document.getElementById('studyMaterialsCard').addEventListener('click', this.openMaterialsModal.bind(this));
+                    document.getElementById('assignmentsCard').addEventListener('click', this.openAssignmentsView.bind(this));
+                    document.getElementById('fullScheduleBtn').addEventListener('click', this.openScheduleModal.bind(this));
+                    document.getElementById('viewAllMaterials').addEventListener('click', this.openMaterialsModal.bind(this));
+                    document.getElementById('refreshTipsBtn').addEventListener('click', this.refreshLearningTips.bind(this));
+                    document.getElementById('viewDetailedGrades').addEventListener('click', this.openGradesModal.bind(this));
+                    document.getElementById('exportPerformance').addEventListener('click', this.exportPerformanceData.bind(this));
+                    
+                    // Modal close buttons
+                    document.getElementById('materialsModalClose').addEventListener('click', this.closeMaterialsModal.bind(this));
+                    document.getElementById('assignmentModalClose').addEventListener('click', this.closeAssignmentModal.bind(this));
+                    document.getElementById('scheduleModalClose').addEventListener('click', this.closeScheduleModal.bind(this));
+                    document.getElementById('gradesModalClose').addEventListener('click', this.closeGradesModal.bind(this));
+                    
+                    // Close dropdowns on outside click
+                    document.addEventListener('click', (e) => {
+                        const dropdown = document.getElementById('profileDropdown');
+                        const profile = document.getElementById('studentProfile');
+                        
+                        if (dropdown && profile && !profile.contains(e.target) && !dropdown.contains(e.target)) {
+                            dropdown.style.display = 'none';
+                        }
+                    });
+                    
+                    // Close panels on outside click
+                    document.addEventListener('click', (e) => {
+                        const aiPanel = document.getElementById('aiAssistantPanel');
+                        const aiBtn = document.getElementById('aiAssistantBtn');
+                        const peerPanel = document.getElementById('peerChatPanel');
+                        const peerBtn = document.getElementById('peerChatBtn');
+                        
+                        if (aiPanel && aiBtn && !aiBtn.contains(e.target) && !aiPanel.contains(e.target)) {
+                            aiPanel.style.display = 'none';
+                        }
+                        
+                        if (peerPanel && peerBtn && !peerBtn.contains(e.target) && !peerPanel.contains(e.target)) {
+                            peerPanel.style.display = 'none';
+                        }
+                    });
+                    
+                    // Close modals on outside click
+                    document.querySelectorAll('.modal-overlay').forEach(modal => {
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) {
+                                if (modal.id === 'materialsModal') this.closeMaterialsModal();
+                                else if (modal.id === 'assignmentModal') this.closeAssignmentModal();
+                                else if (modal.id === 'scheduleModal') this.closeScheduleModal();
+                                else if (modal.id === 'gradesModal') this.closeGradesModal();
+                            }
+                        });
+                    });
+                    
+                    // AI Chat functionality
+                    document.getElementById('sendAiMessage').addEventListener('click', this.sendAiMessage.bind(this));
+                    document.getElementById('aiMessageInput').addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') this.sendAiMessage();
+                    });
+                    
+                    // Peer Chat functionality
+                    document.getElementById('sendPeerMessage').addEventListener('click', this.sendPeerMessage.bind(this));
+                    document.getElementById('peerMessageInput').addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') this.sendPeerMessage();
+                    });
+                    
+                    // Quick questions
+                    document.querySelectorAll('.quick-question').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const question = e.target.dataset.question;
+                            document.getElementById('aiMessageInput').value = question;
+                            this.sendAiMessage();
+                        });
+                    });
+                    
+                    // Performance term select
+                    document.getElementById('performanceTerm').addEventListener('change', this.updatePerformanceData.bind(this));
+                },
+                
+                // Load dashboard data
+                loadDashboardData: function() {
+                    this.loadAiMessages();
+                    this.loadPeerMessages();
+                    this.loadStudyMaterials();
+                    this.loadAssignments();
+                    this.loadSchedule();
+                    this.loadLearningTips();
+                },
+                
+                // Render dashboard
+                renderDashboard: function() {
+                    this.renderGrades();
+                    this.renderProgressChart();
+                    this.renderTodaySchedule();
+                    this.renderDeadlines();
+                    this.renderStudyMaterials();
+                    this.renderLearningTips();
+                    this.renderAiChat();
+                    this.renderOnlineStudents();
+                    this.updateStats();
+                    this.updateMotivationQuote();
+                },
+                
+                // Load AI messages
+                loadAiMessages: function() {
+                    // Demo AI messages
+                    this.state.aiMessages = [
+                        {
+                            id: 1,
+                            sender: 'ai',
+                            message: 'Hello! I\'m your AI Learning Assistant. How can I help you with your studies today?',
+                            time: '10:30 AM',
+                            subject: 'General'
+                        },
+                        {
+                            id: 2,
+                            sender: 'student',
+                            message: 'Can you explain photosynthesis?',
+                            time: '10:32 AM',
+                            subject: 'Science'
+                        },
+                        {
+                            id: 3,
+                            sender: 'ai',
+                            message: 'Photosynthesis is the process by which plants convert light energy into chemical energy. They use sunlight, water, and carbon dioxide to produce glucose and oxygen.',
+                            time: '10:33 AM',
+                            subject: 'Science'
+                        },
+                        {
+                            id: 4,
+                            sender: 'ai',
+                            message: 'Would you like me to explain the chemical equation or discuss the importance of chlorophyll?',
+                            time: '10:33 AM',
+                            subject: 'Science'
+                        }
+                    ];
+                },
+                
+                // Load peer messages
+                loadPeerMessages: function() {
+                    // Demo peer messages
+                    this.state.peerMessages = [
+                        {
+                            id: 1,
+                            sender: 'John',
+                            message: 'Does anyone understand question 3 on the math homework?',
+                            time: 'Yesterday',
+                            avatar: 'J'
+                        },
+                        {
+                            id: 2,
+                            sender: 'Sarah',
+                            message: 'I can help! Which part are you stuck on?',
+                            time: 'Yesterday',
+                            avatar: 'S'
+                        },
+                        {
+                            id: 3,
+                            sender: 'You',
+                            message: 'The quadratic formula part',
+                            time: 'Yesterday',
+                            avatar: 'E'
+                        },
+                        {
+                            id: 4,
+                            sender: 'Mike',
+                            message: 'I just uploaded my solution to the study group',
+                            time: '2 hours ago',
+                            avatar: 'M'
+                        }
+                    ];
+                },
+                
+                // Load study materials
+                loadStudyMaterials: function() {
+                    // Demo study materials
+                    this.state.studyMaterials = [
+                        {
+                            id: 1,
+                            title: 'Mathematics Chapter 5 Notes',
+                            subject: 'Mathematics',
+                            type: 'pdf',
+                            size: '2.4 MB',
+                            uploaded: '2 days ago',
+                            downloads: 15
+                        },
+                        {
+                            id: 2,
+                            title: 'Science Lab Report Template',
+                            subject: 'Science',
+                            type: 'doc',
+                            size: '1.8 MB',
+                            uploaded: '3 days ago',
+                            downloads: 22
+                        },
+                        {
+                            id: 3,
+                            title: 'English Literature Analysis',
+                            subject: 'English',
+                            type: 'pdf',
+                            size: '3.1 MB',
+                            uploaded: '1 week ago',
+                            downloads: 18
+                        },
+                        {
+                            id: 4,
+                            title: 'History Timeline Infographic',
+                            subject: 'History',
+                            type: 'image',
+                            size: '4.2 MB',
+                            uploaded: '4 days ago',
+                            downloads: 25
+                        },
+                        {
+                            id: 5,
+                            title: 'Geography Maps Collection',
+                            subject: 'Geography',
+                            type: 'zip',
+                            size: '5.6 MB',
+                            uploaded: '5 days ago',
+                            downloads: 12
+                        },
+                        {
+                            id: 6,
+                            title: 'Computer Science Code Examples',
+                            subject: 'Computer Science',
+                            type: 'zip',
+                            size: '3.8 MB',
+                            uploaded: '1 week ago',
+                            downloads: 30
+                        }
+                    ];
+                },
+                
+                // Load assignments
+                loadAssignments: function() {
+                    // Demo assignments
+                    this.state.assignments = [
+                        {
+                            id: 1,
+                            title: 'Mathematics Problem Set',
+                            subject: 'Mathematics',
+                            dueDate: '2024-03-18',
+                            status: 'pending',
+                            progress: 60,
+                            priority: 'high'
+                        },
+                        {
+                            id: 2,
+                            title: 'Science Experiment Report',
+                            subject: 'Science',
+                            dueDate: '2024-03-20',
+                            status: 'pending',
+                            progress: 30,
+                            priority: 'medium'
+                        },
+                        {
+                            id: 3,
+                            title: 'English Essay',
+                            subject: 'English',
+                            dueDate: '2024-03-22',
+                            status: 'pending',
+                            progress: 10,
+                            priority: 'low'
+                        },
+                        {
+                            id: 4,
+                            title: 'History Research Paper',
+                            subject: 'History',
+                            dueDate: '2024-03-25',
+                            status: 'completed',
+                            progress: 100,
+                            priority: 'medium'
+                        }
+                    ];
+                },
+                
+                // Load schedule
+                loadSchedule: function() {
+                    // Demo schedule
+                    this.state.schedule = [
+                        {
+                            id: 1,
+                            time: '08:00 - 08:45',
+                            subject: 'Mathematics',
+                            teacher: 'Mr. Johnson',
+                            room: 'Room 101',
+                            type: 'lecture'
+                        },
+                        {
+                            id: 2,
+                            time: '08:45 - 09:30',
+                            subject: 'Science',
+                            teacher: 'Ms. Williams',
+                            room: 'Lab 3',
+                            type: 'lab'
+                        },
+                        {
+                            id: 3,
+                            time: '09:45 - 10:30',
+                            subject: 'English',
+                            teacher: 'Mrs. Brown',
+                            room: 'Room 205',
+                            type: 'discussion'
+                        },
+                        {
+                            id: 4,
+                            time: '10:30 - 11:15',
+                            subject: 'History',
+                            teacher: 'Mr. Davis',
+                            room: 'Room 102',
+                            type: 'lecture'
+                        },
+                        {
+                            id: 5,
+                            time: '11:30 - 12:15',
+                            subject: 'Geography',
+                            teacher: 'Ms. Taylor',
+                            room: 'Room 103',
+                            type: 'presentation'
+                        },
+                        {
+                            id: 6,
+                            time: '12:15 - 13:00',
+                            subject: 'Computer Science',
+                            teacher: 'Mr. Wilson',
+                            room: 'Lab 1',
+                            type: 'lab'
+                        }
+                    ];
+                },
+                
+                // Load learning tips
+                loadLearningTips: function() {
+                    // Demo learning tips
+                    this.state.learningTips = [
+                        {
+                            id: 1,
+                            title: 'Active Recall',
+                            description: 'Test yourself instead of re-reading notes',
+                            category: 'study technique'
+                        },
+                        {
+                            id: 2,
+                            title: 'Pomodoro Method',
+                            description: '25 minutes focused study, 5 minutes break',
+                            category: 'time management'
+                        },
+                        {
+                            id: 3,
+                            title: 'Spaced Repetition',
+                            description: 'Review material at increasing intervals',
+                            category: 'memory'
+                        },
+                        {
+                            id: 4,
+                            title: 'Interleaving',
+                            description: 'Mix different subjects in one study session',
+                            category: 'study technique'
+                        }
+                    ];
+                },
+                
+                // Render grades
+                renderGrades: function() {
+                    const gradesList = document.getElementById('gradesList');
+                    if (!gradesList) return;
+                    
+                    gradesList.innerHTML = '';
+                    
+                    this.config.subjects.forEach(subject => {
+                        const gradeItem = document.createElement('div');
+                        gradeItem.className = 'grade-item';
+                        gradeItem.innerHTML = `
+                            <div class="subject-info">
+                                <h5>${subject.name}</h5>
+                                <p>${subject.teacher}</p>
+                            </div>
+                            <div class="grade-display">
+                                <span class="grade ${subject.grade.toLowerCase()}">${subject.grade}</span>
+                                <span class="marks">${subject.marks}%</span>
+                            </div>
+                            <div class="grade-trend ${subject.trend}">
+                                <i class="fas fa-arrow-${subject.trend}"></i>
+                            </div>
+                        `;
+                        
+                        gradesList.appendChild(gradeItem);
+                    });
+                },
+                
+                // Render progress chart
+                renderProgressChart: function() {
+                    const progressChart = document.getElementById('progressChart');
+                    if (!progressChart) return;
+                    
+                    progressChart.innerHTML = '';
+                    
+                    // Simple line chart for demo
+                    const subjects = ['Math', 'Science', 'English'];
+                    const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                    
+                    const chartContainer = document.createElement('div');
+                    chartContainer.className = 'line-chart';
+                    
+                    // Create grid
+                    const grid = document.createElement('div');
+                    grid.className = 'chart-grid';
+                    
+                    // Add week labels
+                    weeks.forEach(week => {
+                        const weekLabel = document.createElement('div');
+                        weekLabel.className = 'week-label';
+                        weekLabel.textContent = week;
+                        grid.appendChild(weekLabel);
+                    });
+                    
+                    // Add data points (demo data)
+                    const dataPoints = [
+                        { subject: 'Math', values: [70, 75, 80, 85], color: '#06D6A0' },
+                        { subject: 'Science', values: [65, 70, 78, 82], color: '#118AB2' },
+                        { subject: 'English', values: [80, 82, 85, 88], color: '#FFD166' }
+                    ];
+                    
+                    dataPoints.forEach(data => {
+                        const line = document.createElement('div');
+                        line.className = 'chart-line';
+                        line.style.borderColor = data.color;
+                        
+                        data.values.forEach((value, index) => {
+                            const point = document.createElement('div');
+                            point.className = 'data-point';
+                            point.style.left = `${(index * 25) + 12.5}%`;
+                            point.style.bottom = `${value - 60}%`;
+                            point.style.backgroundColor = data.color;
+                            point.title = `${data.subject}: ${value}%`;
+                            line.appendChild(point);
+                        });
+                        
+                        chartContainer.appendChild(line);
+                    });
+                    
+                    chartContainer.appendChild(grid);
+                    progressChart.appendChild(chartContainer);
+                },
+                
+                // Render today's schedule
+                renderTodaySchedule: function() {
+                    const todaySchedule = document.getElementById('todaySchedule');
+                    if (!todaySchedule) return;
+                    
+                    todaySchedule.innerHTML = '';
+                    
+                    this.state.schedule.forEach(item => {
+                        const scheduleItem = document.createElement('div');
+                        scheduleItem.className = `schedule-item ${item.type}`;
+                        scheduleItem.innerHTML = `
+                            <div class="schedule-time">${item.time}</div>
+                            <div class="schedule-details">
+                                <h5>${item.subject}</h5>
+                                <p>${item.teacher} • ${item.room}</p>
+                            </div>
+                            <div class="schedule-type">
+                                <span class="type-badge">${item.type}</span>
+                            </div>
+                        `;
+                        
+                        todaySchedule.appendChild(scheduleItem);
+                    });
+                },
+                
+                // Render deadlines
+                renderDeadlines: function() {
+                    const deadlinesList = document.getElementById('deadlinesList');
+                    if (!deadlinesList) return;
+                    
+                    deadlinesList.innerHTML = '';
+                    
+                    const pendingAssignments = this.state.assignments.filter(a => a.status === 'pending');
+                    
+                    pendingAssignments.forEach(assignment => {
+                        const deadlineItem = document.createElement('div');
+                        deadlineItem.className = 'deadline-item';
+                        deadlineItem.innerHTML = `
+                            <div class="deadline-subject">
+                                <span class="subject-badge">${assignment.subject.charAt(0)}</span>
+                                <div>
+                                    <h5>${assignment.title}</h5>
+                                    <p>Due: ${new Date(assignment.dueDate).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                            <div class="deadline-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${assignment.progress}%"></div>
+                                </div>
+                                <span class="progress-text">${assignment.progress}%</span>
+                            </div>
+                        `;
+                        
+                        deadlineItem.addEventListener('click', () => {
+                            this.viewAssignment(assignment.id);
+                        });
+                        
+                        deadlinesList.appendChild(deadlineItem);
+                    });
+                },
+                
+                // Render study materials
+                renderStudyMaterials: function() {
+                    const materialsGrid = document.getElementById('materialsGrid');
+                    if (!materialsGrid) return;
+                    
+                    materialsGrid.innerHTML = '';
+                    
+                    // Show first 4 materials
+                    this.state.studyMaterials.slice(0, 4).forEach(material => {
+                        const materialCard = document.createElement('div');
+                        materialCard.className = 'material-card';
+                        materialCard.innerHTML = `
+                            <div class="material-icon ${material.type}">
+                                <i class="fas fa-file-${material.type === 'pdf' ? 'pdf' : material.type === 'doc' ? 'word' : material.type === 'image' ? 'image' : 'archive'}"></i>
+                            </div>
+                            <div class="material-info">
+                                <h5>${material.title}</h5>
+                                <p>${material.subject} • ${material.size}</p>
+                                <div class="material-stats">
+                                    <span><i class="far fa-calendar"></i> ${material.uploaded}</span>
+                                    <span><i class="fas fa-download"></i> ${material.downloads}</span>
+                                </div>
+                            </div>
+                            <button class="btn-download">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        `;
+                        
+                        materialCard.addEventListener('click', () => {
+                            this.downloadMaterial(material.id);
+                        });
+                        
+                        materialsGrid.appendChild(materialCard);
+                    });
+                },
+                
+                // Render learning tips
+                renderLearningTips: function() {
+                    const tipsCarousel = document.getElementById('tipsCarousel');
+                    if (!tipsCarousel) return;
+                    
+                    tipsCarousel.innerHTML = '';
+                    
+                    this.state.learningTips.forEach(tip => {
+                        const tipCard = document.createElement('div');
+                        tipCard.className = 'tip-card';
+                        tipCard.innerHTML = `
+                            <div class="tip-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h5>${tip.title}</h5>
+                                <p>${tip.description}</p>
+                                <span class="tip-category">${tip.category}</span>
+                            </div>
+                        `;
+                        
+                        tipsCarousel.appendChild(tipCard);
+                    });
+                },
+                
+                // Render AI chat
+                renderAiChat: function() {
+                    const aiChatContainer = document.getElementById('aiChatContainer');
+                    if (!aiChatContainer) return;
+                    
+                    aiChatContainer.innerHTML = '';
+                    
+                    this.state.aiMessages.forEach(message => {
+                        const messageElement = document.createElement('div');
+                        messageElement.className = `chat-message ${message.sender}`;
+                        messageElement.innerHTML = `
+                            <div class="message-avatar">
+                                ${message.sender === 'ai' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>'}
+                            </div>
+                            <div class="message-content">
+                                <div class="message-text">${message.message}</div>
+                                <div class="message-meta">
+                                    <span class="message-time">${message.time}</span>
+                                    ${message.subject !== 'General' ? `<span class="message-subject">${message.subject}</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+                        
+                        aiChatContainer.appendChild(messageElement);
+                    });
+                    
+                    // Scroll to bottom
+                    aiChatContainer.scrollTop = aiChatContainer.scrollHeight;
+                },
+                
+                // Render online students
+                renderOnlineStudents: function() {
+                    const onlineStudents = document.getElementById('onlineStudents');
+                    if (!onlineStudents) return;
+                    
+                    onlineStudents.innerHTML = '';
+                    
+                    // Demo online students
+                    const students = [
+                        { name: 'John Doe', grade: '10A', status: 'online', avatar: 'J' },
+                        { name: 'Sarah Smith', grade: '10A', status: 'online', avatar: 'S' },
+                        { name: 'Mike Johnson', grade: '10A', status: 'away', avatar: 'M' },
+                        { name: 'Lisa Brown', grade: '10B', status: 'online', avatar: 'L' },
+                        { name: 'David Wilson', grade: '10A', status: 'offline', avatar: 'D' }
+                    ];
+                    
+                    students.forEach(student => {
+                        const studentItem = document.createElement('div');
+                        studentItem.className = `student-item ${student.status}`;
+                        studentItem.innerHTML = `
+                            <div class="student-avatar">${student.avatar}</div>
+                            <div class="student-info">
+                                <h5>${student.name}</h5>
+                                <p>${student.grade}</p>
+                            </div>
+                            <div class="student-status">
+                                <span class="status-dot ${student.status}"></span>
+                            </div>
+                        `;
+                        
+                        studentItem.addEventListener('click', () => {
+                            this.startPrivateChat(student.name);
+                        });
+                        
+                        onlineStudents.appendChild(studentItem);
+                    });
+                },
+                
+                // Update stats
+                updateStats: function() {
+                    const subjects = this.config.subjects;
+                    
+                    // Calculate average marks
+                    const avgMarks = subjects.reduce((sum, subject) => sum + subject.marks, 0) / subjects.length;
+                    
+                    // Convert to grade
+                    let overallGrade = 'B';
+                    if (avgMarks >= 85) overallGrade = 'A';
+                    else if (avgMarks >= 80) overallGrade = 'A-';
+                    else if (avgMarks >= 75) overallGrade = 'B+';
+                    else if (avgMarks >= 70) overallGrade = 'B';
+                    else if (avgMarks >= 65) overallGrade = 'C+';
+                    else if (avgMarks >= 60) overallGrade = 'C';
+                    else if (avgMarks >= 50) overallGrade = 'D';
+                    else overallGrade = 'F';
+                    
+                    // Update overall grade
+                    document.getElementById('overallGrade').textContent = overallGrade;
+                    
+                    // Update attendance rate
+                    document.getElementById('attendanceRate').textContent = '94%';
+                    
+                    // Update pending assignments
+                    const pendingCount = this.state.assignments.filter(a => a.status === 'pending').length;
+                    document.getElementById('pendingAssignmentsCount').textContent = pendingCount;
+                    document.getElementById('pendingAssignments').textContent = pendingCount;
+                    
+                    // Update study hours
+                    document.getElementById('studyHours').textContent = '12.5';
+                    
+                    // Update grade trend
+                    document.getElementById('gradeTrend').textContent = '+2%';
+                    
+                    // Update attendance trend
+                    document.getElementById('attendanceTrend').textContent = 'No change';
+                    
+                    // Update assignment alert
+                    document.getElementById('assignmentAlert').textContent = 'Due Soon';
+                    
+                    // Update study trend
+                    document.getElementById('studyTrend').textContent = '+3.2h';
+                    
+                    // Update badges
+                    document.getElementById('materialCount').textContent = this.state.studyMaterials.length;
+                    document.getElementById('aiMessages').textContent = this.state.aiMessages.filter(m => m.sender === 'ai').length;
+                    document.getElementById('peerMessages').textContent = this.state.peerMessages.length;
+                    document.getElementById('alertCount').textContent = '2';
+                    document.getElementById('aiNotificationCount').textContent = '3';
+                    document.getElementById('chatNotificationCount').textContent = '2';
+                },
+                
+                // Update motivation quote
+                updateMotivationQuote: function() {
+                    const quotes = [
+                        "The beautiful thing about learning is that no one can take it away from you.",
+                        "Education is the most powerful weapon which you can use to change the world.",
+                        "The more that you read, the more things you will know. The more that you learn, the more places you'll go.",
+                        "Learning is not attained by chance, it must be sought for with ardor and attended to with diligence.",
+                        "The capacity to learn is a gift; the ability to learn is a skill; the willingness to learn is a choice."
+                    ];
+                    
+                    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+                    document.getElementById('dailyMotivation').textContent = randomQuote;
+                },
+                
+                // Toggle profile dropdown
+                toggleProfileDropdown: function() {
+                    const dropdown = document.getElementById('profileDropdown');
+                    if (dropdown) {
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    }
+                },
+                
+                // Toggle AI panel
+                toggleAiPanel: function() {
+                    const panel = document.getElementById('aiAssistantPanel');
+                    if (panel) {
+                        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+                        if (panel.style.display === 'block') {
+                            this.renderAiChat();
+                            document.getElementById('aiNotificationCount').textContent = '0';
+                        }
+                    }
+                },
+                
+                // Toggle peer panel
+                togglePeerPanel: function() {
+                    const panel = document.getElementById('peerChatPanel');
+                    if (panel) {
+                        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+                        if (panel.style.display === 'block') {
+                            this.renderPeerChat();
+                            document.getElementById('chatNotificationCount').textContent = '0';
+                        }
+                    }
+                },
+                
+                // Close panels
+                closePanels: function() {
+                    document.getElementById('aiAssistantPanel').style.display = 'none';
+                    document.getElementById('peerChatPanel').style.display = 'none';
+                },
+                
+                // Handle menu click
+                handleMenuClick: function(section, element) {
+                    // Update active state
+                    document.querySelectorAll('.menu-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    element.classList.add('active');
+                    
+                    // Handle different sections
+                    switch (section) {
+                        case 'ai-assistant':
+                            this.openAiAssistant();
+                            break;
+                        case 'peer-chat':
+                            this.openPeerChat();
+                            break;
+                        case 'materials':
+                            this.openMaterialsModal();
+                            break;
+                        case 'assignments':
+                            this.openAssignmentsView();
+                            break;
+                        case 'grades':
+                            this.openGradesModal();
+                            break;
+                        default:
+                            this.showNotification(`Opening ${section.replace('-', ' ')}...`, 'info');
+                            break;
+                    }
+                },
+                
+                // Open AI assistant
+                openAiAssistant: function() {
+                    this.toggleAiPanel();
+                },
+                
+                // Open peer chat
+                openPeerChat: function() {
+                    this.togglePeerPanel();
+                },
+                
+                // Open materials modal
+                openMaterialsModal: function() {
+                    const modal = document.getElementById('materialsModal');
+                    const library = document.getElementById('materialsLibrary');
+                    
+                    if (modal && library) {
+                        library.innerHTML = `
+                            <div class="materials-header">
+                                <h4>All Study Materials</h4>
+                                <div class="materials-filter">
+                                    <select id="materialFilter">
+                                        <option value="all">All Subjects</option>
+                                        <option value="mathematics">Mathematics</option>
+                                        <option value="science">Science</option>
+                                        <option value="english">English</option>
+                                        <option value="history">History</option>
+                                        <option value="geography">Geography</option>
+                                        <option value="computer">Computer Science</option>
+                                    </select>
+                                    <input type="text" id="materialSearch" placeholder="Search materials...">
+                                </div>
+                            </div>
+                            
+                            <div class="materials-list">
+                                ${this.state.studyMaterials.map(material => `
+                                    <div class="material-item" data-subject="${material.subject.toLowerCase()}">
+                                        <div class="material-icon ${material.type}">
+                                            <i class="fas fa-file-${material.type === 'pdf' ? 'pdf' : material.type === 'doc' ? 'word' : material.type === 'image' ? 'image' : 'archive'}"></i>
+                                        </div>
+                                        <div class="material-details">
+                                            <h5>${material.title}</h5>
+                                            <p>${material.subject} • ${material.size} • Uploaded ${material.uploaded}</p>
+                                            <div class="material-actions">
+                                                <button class="btn-view" onclick="StudentDashboard.previewMaterial(${material.id})">
+                                                    <i class="fas fa-eye"></i> Preview
+                                                </button>
+                                                <button class="btn-download" onclick="StudentDashboard.downloadMaterial(${material.id})">
+                                                    <i class="fas fa-download"></i> Download
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="material-stats">
+                                            <span class="downloads"><i class="fas fa-download"></i> ${material.downloads}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                        
+                        modal.style.display = 'flex';
+                        
+                        // Add filter functionality
+                        setTimeout(() => {
+                            document.getElementById('materialFilter').addEventListener('change', this.filterMaterials.bind(this));
+                            document.getElementById('materialSearch').addEventListener('input', this.searchMaterials.bind(this));
+                        }, 100);
+                    }
+                },
+                
+                // Close materials modal
+                closeMaterialsModal: function() {
+                    document.getElementById('materialsModal').style.display = 'none';
+                },
+                
+                // Open assignments view
+                openAssignmentsView: function() {
+                    const modal = document.getElementById('assignmentModal');
+                    const details = document.getElementById('assignmentDetails');
+                    
+                    if (modal && details) {
+                        details.innerHTML = `
+                            <div class="assignments-list">
+                                <h4>My Assignments</h4>
+                                <div class="assignment-filters">
+                                    <button class="filter-btn active" data-filter="all">All</button>
+                                    <button class="filter-btn" data-filter="pending">Pending</button>
+                                    <button class="filter-btn" data-filter="completed">Completed</button>
+                                </div>
+                                
+                                <div class="assignment-items">
+                                    ${this.state.assignments.map(assignment => `
+                                        <div class="assignment-item ${assignment.status}" data-priority="${assignment.priority}">
+                                            <div class="assignment-header">
+                                                <div class="assignment-subject">
+                                                    <span class="subject-badge">${assignment.subject.charAt(0)}</span>
+                                                    <h5>${assignment.title}</h5>
+                                                </div>
+                                                <span class="priority-badge ${assignment.priority}">${assignment.priority}</span>
+                                            </div>
+                                            <div class="assignment-details">
+                                                <p><i class="far fa-calendar"></i> Due: ${new Date(assignment.dueDate).toLocaleDateString()}</p>
+                                                <p><i class="fas fa-book"></i> ${assignment.subject}</p>
+                                            </div>
+                                            <div class="assignment-progress">
+                                                <div class="progress-label">
+                                                    <span>Progress</span>
+                                                    <span>${assignment.progress}%</span>
+                                                </div>
+                                                <div class="progress-bar">
+                                                    <div class="progress-fill" style="width: ${assignment.progress}%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="assignment-actions">
+                                                <button class="btn-action" onclick="StudentDashboard.viewAssignment(${assignment.id})">
+                                                    <i class="fas fa-eye"></i> View
+                                                </button>
+                                                ${assignment.status === 'pending' ? `
+                                                    <button class="btn-action primary" onclick="StudentDashboard.submitAssignment(${assignment.id})">
+                                                        <i class="fas fa-paper-plane"></i> Submit
+                                                    </button>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                        
+                        modal.style.display = 'flex';
+                        
+                        // Add filter functionality
+                        setTimeout(() => {
+                            document.querySelectorAll('.filter-btn').forEach(btn => {
+                                btn.addEventListener('click', (e) => {
+                                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                                    e.target.classList.add('active');
+                                    this.filterAssignments(e.target.dataset.filter);
+                                });
+                            });
+                        }, 100);
+                    }
+                },
+                
+                // Close assignment modal
+                closeAssignmentModal: function() {
+                    document.getElementById('assignmentModal').style.display = 'none';
+                },
+                
+                // Open schedule modal
+                openScheduleModal: function() {
+                    const modal = document.getElementById('scheduleModal');
+                    const schedule = document.getElementById('weeklySchedule');
+                    
+                    if (modal && schedule) {
+                        schedule.innerHTML = `
+                            <div class="schedule-calendar">
+                                <div class="calendar-header">
+                                    <button class="btn-calendar prev"><i class="fas fa-chevron-left"></i></button>
+                                    <h4>Week of March 11, 2024</h4>
+                                    <button class="btn-calendar next"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                                
+                                <div class="calendar-grid">
+                                    <div class="calendar-day">
+                                        <div class="day-header">Mon</div>
+                                        <div class="day-schedule">
+                                            ${this.renderDaySchedule('Monday')}
+                                        </div>
+                                    </div>
+                                    <div class="calendar-day">
+                                        <div class="day-header">Tue</div>
+                                        <div class="day-schedule">
+                                            ${this.renderDaySchedule('Tuesday')}
+                                        </div>
+                                    </div>
+                                    <div class="calendar-day">
+                                        <div class="day-header">Wed</div>
+                                        <div class="day-schedule">
+                                            ${this.renderDaySchedule('Wednesday')}
+                                        </div>
+                                    </div>
+                                    <div class="calendar-day">
+                                        <div class="day-header">Thu</div>
+                                        <div class="day-schedule">
+                                            ${this.renderDaySchedule('Thursday')}
+                                        </div>
+                                    </div>
+                                    <div class="calendar-day">
+                                        <div class="day-header">Fri</div>
+                                        <div class="day-schedule">
+                                            ${this.renderDaySchedule('Friday')}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="schedule-legend">
+                                <h5>Legend:</h5>
+                                <div class="legend-items">
+                                    <div class="legend-item">
+                                        <span class="legend-color lecture"></span>
+                                        <span>Lecture</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color lab"></span>
+                                        <span>Lab</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color discussion"></span>
+                                        <span>Discussion</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color presentation"></span>
+                                        <span>Presentation</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        modal.style.display = 'flex';
+                    }
+                },
+                
+                // Render day schedule
+                renderDaySchedule: function(day) {
+                    // Demo schedule for different days
+                    const daySchedules = {
+                        'Monday': this.state.schedule,
+                        'Tuesday': this.state.schedule.map(item => ({ ...item, subject: item.subject + ' (Cont.)' })),
+                        'Wednesday': this.state.schedule.slice(0, 4),
+                        'Thursday': this.state.schedule.slice(2),
+                        'Friday': this.state.schedule.map(item => ({ ...item, type: 'discussion' }))
+                    };
+                    
+                    const schedule = daySchedules[day] || [];
+                    
+                    return schedule.map(item => `
+                        <div class="schedule-event ${item.type}">
+                            <div class="event-time">${item.time}</div>
+                            <div class="event-details">
+                                <h6>${item.subject}</h6>
+                                <p>${item.teacher}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                },
+                
+                // Close schedule modal
+                closeScheduleModal: function() {
+                    document.getElementById('scheduleModal').style.display = 'none';
+                },
+                
+                // Open grades modal
+                openGradesModal: function() {
+                    const modal = document.getElementById('gradesModal');
+                    const details = document.getElementById('gradesDetails');
+                    
+                    if (modal && details) {
+                        details.innerHTML = `
+                            <div class="grades-detail-view">
+                                <h4>Detailed Academic Performance</h4>
+                                
+                                <div class="grades-table">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Subject</th>
+                                                <th>Teacher</th>
+                                                <th>Term 1</th>
+                                                <th>Term 2</th>
+                                                <th>Current</th>
+                                                <th>Trend</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${this.config.subjects.map(subject => `
+                                                <tr>
+                                                    <td>
+                                                        <div class="subject-cell">
+                                                            <span class="subject-icon">${subject.name.charAt(0)}</span>
+                                                            <span>${subject.name}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>${subject.teacher}</td>
+                                                    <td>
+                                                        <span class="grade-badge ${this.getPreviousGrade(subject.marks - 5)}">
+                                                            ${this.getPreviousGrade(subject.marks - 5)}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="grade-badge ${this.getPreviousGrade(subject.marks - 2)}">
+                                                            ${this.getPreviousGrade(subject.marks - 2)}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="grade-badge ${subject.grade.toLowerCase()}">
+                                                            ${subject.grade} (${subject.marks}%)
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="trend-indicator ${subject.trend}">
+                                                            <i class="fas fa-arrow-${subject.trend}"></i>
+                                                            <span>${subject.trend === 'up' ? 'Improving' : subject.trend === 'down' ? 'Declining' : 'Stable'}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn-icon" onclick="StudentDashboard.viewSubjectDetails('${subject.name}')">
+                                                            <i class="fas fa-chart-line"></i>
+                                                        </button>
+                                                        <button class="btn-icon" onclick="StudentDashboard.getHelpWithSubject('${subject.name}')">
+                                                            <i class="fas fa-question-circle"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div class="grades-summary-stats">
+                                    <div class="summary-stat">
+                                        <i class="fas fa-star"></i>
+                                        <div>
+                                            <h5>Overall Average</h5>
+                                            <p>84.2% (B+)</p>
+                                        </div>
+                                    </div>
+                                    <div class="summary-stat">
+                                        <i class="fas fa-arrow-up"></i>
+                                        <div>
+                                            <h5>Improvement</h5>
+                                            <p>+5.3% from last term</p>
+                                        </div>
+                                    </div>
+                                    <div class="summary-stat">
+                                        <i class="fas fa-trophy"></i>
+                                        <div>
+                                            <h5>Top Subject</h5>
+                                            <p>Computer Science (92%)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        modal.style.display = 'flex';
+                    }
+                },
+                
+                // Get previous grade
+                getPreviousGrade: function(marks) {
+                    if (marks >= 85) return 'A';
+                    if (marks >= 80) return 'A-';
+                    if (marks >= 75) return 'B+';
+                    if (marks >= 70) return 'B';
+                    if (marks >= 65) return 'C+';
+                    if (marks >= 60) return 'C';
+                    if (marks >= 50) return 'D';
+                    return 'F';
+                },
+                
+                // Close grades modal
+                closeGradesModal: function() {
+                    document.getElementById('gradesModal').style.display = 'none';
+                },
+                
+                // Send AI message
+                sendAiMessage: function() {
+                    const input = document.getElementById('aiMessageInput');
+                    const message = input.value.trim();
+                    
+                    if (!message) return;
+                    
+                    // Add student message
+                    this.state.aiMessages.push({
+                        id: this.state.aiMessages.length + 1,
+                        sender: 'student',
+                        message: message,
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        subject: 'General'
+                    });
+                    
+                    // Clear input
+                    input.value = '';
+                    
+                    // Render messages
+                    this.renderAiChat();
+                    
+                    // Simulate AI response after delay
+                    setTimeout(() => {
+                        this.generateAiResponse(message);
+                    }, 1000);
+                },
+                
+                // Generate AI response
+                generateAiResponse: function(question) {
+                    const responses = {
+                        'math': "I can help with mathematics! Would you like assistance with algebra, geometry, or calculus?",
+                        'science': "Science is fascinating! Are you studying biology, chemistry, or physics?",
+                        'english': "English literature and language are important. Do you need help with grammar, writing, or analysis?",
+                        'homework': "I'd be happy to help with your homework. Which subject and what specific problem are you working on?",
+                        'default': "That's an interesting question! I'm here to help you learn. Could you provide more details so I can give you the best assistance?"
+                    };
+                    
+                    let response = responses.default;
+                    const lowerQuestion = question.toLowerCase();
+                    
+                    if (lowerQuestion.includes('math') || lowerQuestion.includes('calculate')) {
+                        response = responses.math;
+                    } else if (lowerQuestion.includes('science') || lowerQuestion.includes('experiment')) {
+                        response = responses.science;
+                    } else if (lowerQuestion.includes('english') || lowerQuestion.includes('write')) {
+                        response = responses.english;
+                    } else if (lowerQuestion.includes('homework') || lowerQuestion.includes('assignment')) {
+                        response = responses.homework;
+                    }
+                    
+                    this.state.aiMessages.push({
+                        id: this.state.aiMessages.length + 1,
+                        sender: 'ai',
+                        message: response,
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        subject: 'General'
+                    });
+                    
+                    this.renderAiChat();
+                    this.showNotification('AI Assistant responded to your question', 'info');
+                },
+                
+                // Send peer message
+                sendPeerMessage: function() {
+                    const input = document.getElementById('peerMessageInput');
+                    const message = input.value.trim();
+                    
+                    if (!message) return;
+                    
+                    // Add message
+                    this.state.peerMessages.push({
+                        id: this.state.peerMessages.length + 1,
+                        sender: 'You',
+                        message: message,
+                        time: 'Just now',
+                        avatar: this.state.studentData.name.charAt(0)
+                    });
+                    
+                    // Clear input
+                    input.value = '';
+                    
+                    // Render messages
+                    this.renderPeerChat();
+                    
+                    // Simulate peer response
+                    setTimeout(() => {
+                        this.simulatePeerResponse(message);
+                    }, 2000);
+                },
+                
+                // Render peer chat
+                renderPeerChat: function() {
+                    const chatMessages = document.getElementById('peerChatMessages');
+                    if (!chatMessages) return;
+                    
+                    chatMessages.innerHTML = '';
+                    
+                    this.state.peerMessages.forEach(message => {
+                        const messageElement = document.createElement('div');
+                        messageElement.className = `peer-message ${message.sender === 'You' ? 'outgoing' : 'incoming'}`;
+                        messageElement.innerHTML = `
+                            <div class="peer-avatar">${message.avatar}</div>
+                            <div class="peer-content">
+                                <div class="peer-name">${message.sender}</div>
+                                <div class="peer-text">${message.message}</div>
+                                <div class="peer-time">${message.time}</div>
+                            </div>
+                        `;
+                        
+                        chatMessages.appendChild(messageElement);
+                    });
+                    
+                    // Scroll to bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                },
+                
+                // Simulate peer response
+                simulatePeerResponse: function(message) {
+                    const responses = [
+                        "That's a good point!",
+                        "I was thinking the same thing.",
+                        "Can you explain that further?",
+                        "Let me check my notes on that.",
+                        "We should ask the teacher about that."
+                    ];
+                    
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    const randomStudent = ['John', 'Sarah', 'Mike'][Math.floor(Math.random() * 3)];
+                    
+                    this.state.peerMessages.push({
+                        id: this.state.peerMessages.length + 1,
+                        sender: randomStudent,
+                        message: randomResponse,
+                        time: 'Just now',
+                        avatar: randomStudent.charAt(0)
+                    });
+                    
+                    this.renderPeerChat();
+                },
+                
+                // Start learning session
+                startLearningSession: function() {
+                    this.showNotification('Starting focused learning session...', 'info');
+                    
+                    // In a real system, this would start a Pomodoro timer
+                    setTimeout(() => {
+                        this.showNotification('Learning session started! 25 minutes of focused study.', 'success');
+                    }, 500);
+                },
+                
+                // View assignment
+                viewAssignment: function(assignmentId) {
+                    const assignment = this.state.assignments.find(a => a.id === assignmentId);
+                    if (!assignment) return;
+                    
+                    this.closeAssignmentModal();
+                    
+                    const details = document.getElementById('assignmentDetails');
+                    if (details) {
+                        details.innerHTML = `
+                            <div class="assignment-detail-view">
+                                <div class="assignment-header">
+                                    <h4>${assignment.title}</h4>
+                                    <span class="status-badge ${assignment.status}">${assignment.status}</span>
+                                </div>
+                                
+                                <div class="assignment-info">
+                                    <div class="info-row">
+                                        <i class="fas fa-book"></i>
+                                        <div>
+                                            <h5>Subject</h5>
+                                            <p>${assignment.subject}</p>
+                                        </div>
+                                    </div>
+                                    <div class="info-row">
+                                        <i class="far fa-calendar"></i>
+                                        <div>
+                                            <h5>Due Date</h5>
+                                            <p>${new Date(assignment.dueDate).toLocaleDateString()}</p>
+                                        </div>
+                                    </div>
+                                    <div class="info-row">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <div>
+                                            <h5>Priority</h5>
+                                            <p class="priority-${assignment.priority}">${assignment.priority}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="assignment-description">
+                                    <h5>Description</h5>
+                                    <p>Complete all problems in Chapter 5 of your mathematics textbook. Show all work and submit as a PDF document.</p>
+                                </div>
+                                
+                                <div class="assignment-progress-detail">
+                                    <h5>Your Progress</h5>
+                                    <div class="progress-container">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: ${assignment.progress}%"></div>
+                                        </div>
+                                        <span class="progress-text">${assignment.progress}% complete</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="assignment-actions-detail">
+                                    ${assignment.status === 'pending' ? `
+                                        <button class="btn-primary" onclick="StudentDashboard.updateAssignmentProgress(${assignment.id})">
+                                            <i class="fas fa-edit"></i> Update Progress
+                                        </button>
+                                        <button class="btn-success" onclick="StudentDashboard.submitAssignment(${assignment.id})">
+                                            <i class="fas fa-paper-plane"></i> Submit Assignment
+                                        </button>
+                                    ` : `
+                                        <button class="btn-secondary" onclick="StudentDashboard.viewSubmission(${assignment.id})">
+                                            <i class="fas fa-eye"></i> View Submission
+                                        </button>
+                                    `}
+                                    <button class="btn-secondary" onclick="StudentDashboard.getHelpWithAssignment(${assignment.id})">
+                                        <i class="fas fa-question-circle"></i> Get Help
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        document.getElementById('assignmentModal').style.display = 'flex';
+                    }
+                },
+                
+                // Download material
+                downloadMaterial: function(materialId) {
+                    const material = this.state.studyMaterials.find(m => m.id === materialId);
+                    if (!material) return;
+                    
+                    // Increment download count
+                    material.downloads++;
+                    
+                    this.showNotification(`Downloading ${material.title}...`, 'info');
+                    
+                    // Simulate download
+                    setTimeout(() => {
+                        this.showNotification(`${material.title} downloaded successfully!`, 'success');
+                        this.updateMaterialStats();
+                    }, 1000);
+                },
+                
+                // Preview material
+                previewMaterial: function(materialId) {
+                    const material = this.state.studyMaterials.find(m => m.id === materialId);
+                    if (!material) return;
+                    
+                    this.showNotification(`Previewing ${material.title}...`, 'info');
+                },
+                
+                // Filter materials
+                filterMaterials: function() {
+                    const filter = document.getElementById('materialFilter').value;
+                    const items = document.querySelectorAll('.material-item');
+                    
+                    items.forEach(item => {
+                        if (filter === 'all' || item.dataset.subject.includes(filter)) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                },
+                
+                // Search materials
+                searchMaterials: function() {
+                    const search = document.getElementById('materialSearch').value.toLowerCase();
+                    const items = document.querySelectorAll('.material-item');
+                    
+                    items.forEach(item => {
+                        const title = item.querySelector('h5').textContent.toLowerCase();
+                        if (title.includes(search)) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                },
+                
+                // Filter assignments
+                filterAssignments: function(filter) {
+                    const items = document.querySelectorAll('.assignment-item');
+                    
+                    items.forEach(item => {
+                        if (filter === 'all' || item.classList.contains(filter)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                },
+                
+                // Update assignment progress
+                updateAssignmentProgress: function(assignmentId) {
+                    const assignment = this.state.assignments.find(a => a.id === assignmentId);
+                    if (!assignment) return;
+                    
+                    const newProgress = prompt('Enter new progress percentage (0-100):', assignment.progress);
+                    if (newProgress !== null) {
+                        const progress = parseInt(newProgress);
+                        if (!isNaN(progress) && progress >= 0 && progress <= 100) {
+                            assignment.progress = progress;
+                            if (progress === 100) {
+                                assignment.status = 'completed';
+                            }
+                            this.showNotification('Assignment progress updated!', 'success');
+                            this.closeAssignmentModal();
+                            this.openAssignmentsView();
+                            this.updateStats();
+                        } else {
+                            this.showNotification('Please enter a valid number between 0 and 100', 'error');
+                        }
+                    }
+                },
+                
+                // Submit assignment
+                submitAssignment: function(assignmentId) {
+                    const assignment = this.state.assignments.find(a => a.id === assignmentId);
+                    if (!assignment) return;
+                    
+                    if (assignment.progress < 100) {
+                        if (!confirm('Your progress is less than 100%. Are you sure you want to submit?')) {
+                            return;
+                        }
+                    }
+                    
+                    assignment.status = 'completed';
+                    assignment.progress = 100;
+                    
+                    this.showNotification('Assignment submitted successfully!', 'success');
+                    this.closeAssignmentModal();
+                    this.updateStats();
+                },
+                
+                // Update performance data
+                updatePerformanceData: function() {
+                    const term = document.getElementById('performanceTerm').value;
+                    this.showNotification(`Loading ${term.replace('current', 'current term')} data...`, 'info');
+                },
+                
+                // Export performance data
+                exportPerformanceData: function() {
+                    const student = this.state.studentData;
+                    const subjects = this.config.subjects;
+                    
+                    const csvContent = [
+                        ['Subject', 'Grade', 'Marks', 'Teacher', 'Trend'],
+                        ...subjects.map(subject => [
+                            subject.name,
+                            subject.grade,
+                            subject.marks + '%',
+                            subject.teacher,
+                            subject.trend
+                        ])
+                    ].map(row => row.join(',')).join('\n');
+                    
+                    const blob = new Blob([csvContent], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `performance-${student.name.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.csv`;
+                    a.click();
+                    
+                    URL.revokeObjectURL(url);
+                    this.showNotification('Performance data exported successfully', 'success');
+                },
+                
+                // Refresh learning tips
+                refreshLearningTips: function() {
+                    this.loadLearningTips();
+                    this.renderLearningTips();
+                    this.showNotification('Learning tips refreshed!', 'success');
+                },
+                
+                // Update material stats
+                updateMaterialStats: function() {
+                    document.getElementById('materialCount').textContent = this.state.studyMaterials.length;
+                },
+                
+                // Start private chat
+                startPrivateChat: function(studentName) {
+                    this.showNotification(`Starting private chat with ${studentName}...`, 'info');
+                },
+                
+                // View subject details
+                viewSubjectDetails: function(subjectName) {
+                    this.showNotification(`Opening detailed view for ${subjectName}...`, 'info');
+                },
+                
+                // Get help with subject
+                getHelpWithSubject: function(subjectName) {
+                    this.openAiAssistant();
+                    document.getElementById('aiMessageInput').value = `I need help with ${subjectName}`;
+                    this.sendAiMessage();
+                },
+                
+                // View submission
+                viewSubmission: function(assignmentId) {
+                    this.showNotification('Viewing assignment submission...', 'info');
+                },
+                
+                // Get help with assignment
+                getHelpWithAssignment: function(assignmentId) {
+                    const assignment = this.state.assignments.find(a => a.id === assignmentId);
+                    if (assignment) {
+                        this.openAiAssistant();
+                        document.getElementById('aiMessageInput').value = `I need help with my ${assignment.subject} assignment: ${assignment.title}`;
+                        this.sendAiMessage();
+                    }
+                },
+                
+                // Show notification
+                showNotification: function(message, type = 'info') {
+                    // Create notification element
+                    const notification = document.createElement('div');
+                    notification.className = `student-notification ${type}`;
+                    notification.innerHTML = `
+                        <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 
+                                       type === 'warning' ? 'exclamation-triangle' : 
+                                       type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                        <span>${message}</span>
+                    `;
+                    
+                    // Add to document
+                    document.body.appendChild(notification);
+                    
+                    // Add styles if not already added
+                    if (!document.getElementById('student-notification-styles')) {
+                        const styles = document.createElement('style');
+                        styles.id = 'student-notification-styles';
+                        styles.textContent = `
+                            .student-notification {
+                                position: fixed;
+                                bottom: 20px;
+                                right: 20px;
+                                padding: 15px 20px;
+                                border-radius: 10px;
+                                box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                                z-index: 10000;
+                                animation: slideInUp 0.3s ease;
+                                max-width: 350px;
+                                font-weight: 500;
+                                backdrop-filter: blur(10px);
+                            }
+                            
+                            .student-notification.info {
+                                background: rgba(6, 214, 160, 0.2);
+                                color: #0c5460;
+                                border-left: 4px solid #06D6A0;
+                            }
+                            
+                            .student-notification.warning {
+                                background: rgba(255, 193, 7, 0.2);
+                                color: #856404;
+                                border-left: 4px solid #ffc107;
+                            }
+                            
+                            .student-notification.success {
+                                background: rgba(40, 167, 69, 0.2);
+                                color: #155724;
+                                border-left: 4px solid #28a745;
+                            }
+                            
+                            .student-notification.error {
+                                background: rgba(220, 53, 69, 0.2);
+                                color: #721c24;
+                                border-left: 4px solid #dc3545;
+                            }
+                        `;
+                        document.head.appendChild(styles);
+                    }
+                    
+                    // Auto remove after 5 seconds
+                    setTimeout(() => {
+                        notification.style.animation = 'slideOutDown 0.3s ease';
+                        setTimeout(() => {
+                            if (notification.parentNode) {
+                                notification.parentNode.removeChild(notification);
+                            }
+                        }, 300);
+                    }, 5000);
+                },
+                
+                // Start auto-save
+                startAutoSave: function() {
+                    setInterval(() => {
+                        this.autoSaveData();
+                    }, this.config.autoSaveInterval);
+                },
+                
+                // Auto-save data
+                autoSaveData: function() {
+                    // Save student data to localStorage
+                    localStorage.setItem('studentData', JSON.stringify(this.state.studentData));
+                    // Optional: Show auto-save notification
+                    // this.showNotification('Data auto-saved', 'info');
+                },
+                
+                // Start session timer
+                startSessionTimer: function() {
+                    setInterval(() => {
+                        this.checkSession();
+                    }, 60000);
+                },
+                
+                // Check session
+                checkSession: function() {
+                    const loginTime = localStorage.getItem('studentLoginTime');
+                    if (loginTime) {
+                        const currentTime = Date.now();
+                        const sessionAge = currentTime - parseInt(loginTime);
+                        
+                        if (sessionAge > this.config.sessionTimeout) {
+                            this.showNotification('Session expired. Redirecting to login...', 'warning');
+                            setTimeout(() => {
+                                this.logout();
+                            }, 2000);
+                        }
+                    }
+                },
+                
+                // Logout
+                logout: function() {
+                    if (confirm('Are you sure you want to logout?')) {
+                        // Clear session data
+                        localStorage.removeItem('studentLoggedIn');
+                        localStorage.removeItem('studentId');
+                        localStorage.removeItem('studentName');
+                        localStorage.removeItem('studentGrade');
+                        localStorage.removeItem('studentLoginTime');
+                        
+                        // Redirect to login page
+                        window.location.href = 'student.html';
+                    }
+                }
+            };
+            
+            // Initialize on DOM load
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    StudentDashboard.init();
+                });
+            } else {
+                StudentDashboard.init();
+            }
+            
+            // Export to global scope
+            window.StudentDashboard = StudentDashboard;
+        })();
+    </script>
+</body>
+</html>

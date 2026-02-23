@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ShuleAI</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-dashboard">
+    <!-- Top Navigation -->
+    <nav class="admin-nav">
+        <div class="nav-left">
+            <div class="logo">
+                <i class="fas fa-user-shield"></i>
+                <div>
+                    <h2>Shule<span class="ai">AI</span> Admin</h2>
+                    <p class="role-tag">Oversight Dashboard</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-center">
+            <div class="school-info">
+                <i class="fas fa-school"></i>
+                <div>
+                    <h3>Greenwood High School</h3>
+                    <p>Academic Year 2024 | Term 1</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <div class="admin-profile">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=FF6B6B&color=fff" alt="Admin">
+                <div class="profile-info">
+                    <span class="admin-name">Admin User</span>
+                    <span class="admin-id">ID: ADM-001</span>
+                </div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <button class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4><i class="fas fa-tachometer-alt"></i> DASHBOARD</h4>
+                    <a href="#" class="menu-item active">
+                        <i class="fas fa-home"></i> Overview
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-chart-line"></i> Analytics
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-eye"></i> MONITORING</h4>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-user-graduate"></i> Students
+                        <span class="badge">1,245</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-chalkboard-teacher"></i> Teachers
+                        <span class="badge">68</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-users"></i> Parents
+                        <span class="badge">2,490</span>
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-chart-bar"></i> PERFORMANCE</h4>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-chart-pie"></i> Academic Reports
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-calendar-check"></i> Attendance
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-trend-up"></i> Trends
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-money-check-alt"></i> FINANCIAL</h4>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-coins"></i> Fee Collection
+                        <span class="badge warning">15% Due</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-file-invoice-dollar"></i> Reports
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-bell"></i> ALERTS</h4>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-exclamation-triangle"></i> System Alerts
+                        <span class="badge danger">3</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-flag"></i> Flags
+                        <span class="badge">12</span>
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-cog"></i> SYSTEM</h4>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-sliders-h"></i> Settings
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-history"></i> Audit Log
+                    </a>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <i class="fas fa-circle status-active"></i>
+                    <span>System: <strong>Active</strong></span>
+                </div>
+                <a href="../index.html" class="back-to-home">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-icon total-students">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>1,245</h3>
+                        <p>Total Students</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 5.2%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon total-teachers">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>68</h3>
+                        <p>Active Teachers</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 2.1%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon performance">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>84.5%</h3>
+                        <p>Avg. Performance</p>
+                    </div>
+                    <div class="stat-trend down">
+                        <i class="fas fa-arrow-down"></i> 1.3%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon fees">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>85%</h3>
+                        <p>Fee Collection</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 8.7%
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Section -->
+            <div class="alerts-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-exclamation-triangle"></i> System Alerts</h3>
+                    <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="alerts-container">
+                    <div class="alert-card critical">
+                        <div class="alert-icon">
+                            <i class="fas fa-skull-crossbones"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Performance Decline Detected</h4>
+                            <p>Grade 10 average dropped by 15% in Mathematics</p>
+                            <span class="alert-time"><i class="far fa-clock"></i> 2 hours ago</span>
+                        </div>
+                        <button class="btn-action">Investigate</button>
+                    </div>
+                    
+                    <div class="alert-card warning">
+                        <div class="alert-icon">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Teacher Activity Low</h4>
+                            <p>3 teachers haven't updated marks in 7 days</p>
+                            <span class="alert-time"><i class="far fa-clock"></i> 1 day ago</span>
+                        </div>
+                        <button class="btn-action">Review</button>
+                    </div>
+                    
+                    <div class="alert-card info">
+                        <div class="alert-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Fee Collection Update</h4>
+                            <p>15% of term fees still pending across grades</p>
+                            <span class="alert-time"><i class="far fa-clock"></i> 2 days ago</span>
+                        </div>
+                        <button class="btn-action">Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monitoring Sections -->
+            <div class="monitoring-grid">
+                <!-- Teacher Activity -->
+                <div class="monitoring-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-chalkboard-teacher"></i> Teacher Activity Monitor</h4>
+                        <span class="card-badge">Last 7 days</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="teacher-avatar">
+                                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=4ECDC4&color=fff" alt="Teacher">
+                                </div>
+                                <div class="activity-info">
+                                    <h5>John Doe</h5>
+                                    <p>Updated marks for Grade 10A</p>
+                                    <span class="activity-time">Today, 10:30 AM</span>
+                                </div>
+                                <span class="activity-status active">Active</span>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="teacher-avatar">
+                                    <img src="https://ui-avatars.com/api/?name=Jane+Smith&background=4ECDC4&color=fff" alt="Teacher">
+                                </div>
+                                <div class="activity-info">
+                                    <h5>Jane Smith</h5>
+                                    <p>Added attendance for Grade 9B</p>
+                                    <span class="activity-time">Today, 09:15 AM</span>
+                                </div>
+                                <span class="activity-status active">Active</span>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="teacher-avatar">
+                                    <img src="https://ui-avatars.com/api/?name=Robert+Brown&background=4ECDC4&color=fff" alt="Teacher">
+                                </div>
+                                <div class="activity-info">
+                                    <h5>Robert Brown</h5>
+                                    <p>No updates in 3 days</p>
+                                    <span class="activity-time">Last: Monday</span>
+                                </div>
+                                <span class="activity-status inactive">Inactive</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="card-link">View All Teachers <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Performance Overview -->
+                <div class="monitoring-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-chart-pie"></i> Performance Overview</h4>
+                        <span class="card-badge">Current Term</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="performance-metrics">
+                            <div class="metric">
+                                <div class="metric-label">
+                                    <span class="metric-color" style="background: #FF6B6B;"></span>
+                                    <span>Excellent (A)</span>
+                                </div>
+                                <div class="metric-value">35%</div>
+                                <div class="metric-bar">
+                                    <div class="bar-fill" style="width: 35%; background: #FF6B6B;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric">
+                                <div class="metric-label">
+                                    <span class="metric-color" style="background: #FFD166;"></span>
+                                    <span>Good (B)</span>
+                                </div>
+                                <div class="metric-value">40%</div>
+                                <div class="metric-bar">
+                                    <div class="bar-fill" style="width: 40%; background: #FFD166;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric">
+                                <div class="metric-label">
+                                    <span class="metric-color" style="background: #06D6A0;"></span>
+                                    <span>Average (C)</span>
+                                </div>
+                                <div class="metric-value">20%</div>
+                                <div class="metric-bar">
+                                    <div class="bar-fill" style="width: 20%; background: #06D6A0;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric">
+                                <div class="metric-label">
+                                    <span class="metric-color" style="background: #118AB2;"></span>
+                                    <span>Needs Help (D/F)</span>
+                                </div>
+                                <div class="metric-value">5%</div>
+                                <div class="metric-bar">
+                                    <div class="bar-fill" style="width: 5%; background: #118AB2;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="performance-summary">
+                            <div class="summary-item">
+                                <i class="fas fa-arrow-up text-success"></i>
+                                <div>
+                                    <h5>12% Improvement</h5>
+                                    <p>Grade 11 Science</p>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-arrow-down text-danger"></i>
+                                <div>
+                                    <h5>8% Decline</h5>
+                                    <p>Grade 9 Mathematics</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Log -->
+            <div class="activity-log">
+                <div class="section-header">
+                    <h3><i class="fas fa-history"></i> Recent System Activity</h3>
+                    <a href="#" class="view-all">Full Log <i class="fas fa-external-link-alt"></i></a>
+                </div>
+                
+                <div class="log-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>User</th>
+                                <th>Activity</th>
+                                <th>Details</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10:30 AM</td>
+                                <td>
+                                    <div class="user-cell">
+                                        <img src="https://ui-avatars.com/api/?name=T+Miller&background=4ECDC4&color=fff" alt="User">
+                                        <span>T. Miller</span>
+                                    </div>
+                                </td>
+                                <td>Marks Updated</td>
+                                <td>Grade 10A - Mathematics</td>
+                                <td><span class="status-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>09:45 AM</td>
+                                <td>
+                                    <div class="user-cell">
+                                        <img src="https://ui-avatars.com/api/?name=System&background=666&color=fff" alt="System">
+                                        <span>System</span>
+                                    </div>
+                                </td>
+                                <td>Alert Generated</td>
+                                <td>Fee reminder sent to 45 parents</td>
+                                <td><span class="status-info">Processed</span></td>
+                            </tr>
+                            <tr>
+                                <td>Yesterday</td>
+                                <td>
+                                    <div class="user-cell">
+                                        <img src="https://ui-avatars.com/api/?name=P+Johnson&background=FFD166&color=fff" alt="Parent">
+                                        <span>P. Johnson</span>
+                                    </div>
+                                </td>
+                                <td>Parent Login</td>
+                                <td>Viewed student report</td>
+                                <td><span class="status-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>Yesterday</td>
+                                <td>
+                                    <div class="user-cell">
+                                        <img src="https://ui-avatars.com/api/?name=S+Williams&background=06D6A0&color=fff" alt="Student">
+                                        <span>S. Williams</span>
+                                    </div>
+                                </td>
+                                <td>AI Assistant Chat</td>
+                                <td>Asked 3 math questions</td>
+                                <td><span class="status-success">Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Admin Modal -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-shield"></i> Admin Control Panel</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>This is where admin-specific controls would appear for detailed oversight actions.</p>
+                <div class="modal-actions">
+                    <button class="btn-primary">Generate Report</button>
+                    <button class="btn-secondary">System Settings</button>
+                    <button class="btn-danger">Emergency Lockdown</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/admin.js"></script>
+</body>
+</html>

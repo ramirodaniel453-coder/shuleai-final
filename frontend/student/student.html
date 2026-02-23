@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - ShuleAI</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/student.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="student-login-page">
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fas fa-user-graduate"></i>
+            <h1>Student Portal</h1>
+            <p class="subtitle">Learning & Interaction Dashboard</p>
+        </div>
+
+        <div class="login-box">
+            <div class="login-card">
+                <h2><i class="fas fa-lock"></i> Student Login</h2>
+                
+                <form id="studentLoginForm">
+                    <div class="form-group">
+                        <label for="studentId"><i class="fas fa-id-card"></i> Student ID</label>
+                        <input type="text" id="studentId" placeholder="Enter your student ID" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-key"></i> Password</label>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox"> Remember me
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Access Learning Portal
+                    </button>
+                </form>
+                
+                <div class="quick-access">
+                    <h4><i class="fas fa-bolt"></i> Quick Access</h4>
+                    <div class="access-buttons">
+                        <button class="btn-demo" id="demoBtn1">
+                            <i class="fas fa-graduation-cap"></i> Demo: Emma Smith (Grade 10A)
+                        </button>
+                        <button class="btn-demo" id="demoBtn2">
+                            <i class="fas fa-graduation-cap"></i> Demo: James Wilson (Grade 9B)
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="login-footer">
+                    <p>Role: <strong>Learning & Interaction</strong></p>
+                    <p class="permissions">Access learning materials, interact with AI assistant, track progress</p>
+                    <a href="../index.html" class="back-home">
+                        <i class="fas fa-arrow-left"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+            
+            <div class="login-info">
+                <h3><i class="fas fa-info-circle"></i> Student Portal Features</h3>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fas fa-book-open"></i>
+                        <div>
+                            <h5>Learning Materials</h5>
+                            <p>Access notes, assignments, and resources</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <i class="fas fa-robot"></i>
+                        <div>
+                            <h5>AI Learning Assistant</h5>
+                            <p>Get instant help with homework and concepts</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <h5>Peer Interaction</h5>
+                            <p>Chat with classmates and study together</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <h5>Progress Tracking</h5>
+                            <p>Monitor your grades and improvement</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>
+                        <strong>Student Capabilities:</strong> 
+                        <ul>
+                            <li>Access educational materials and assignments</li>
+                            <li>Chat with AI assistant for learning support</li>
+                            <li>Interact with other students in the system</li>
+                            <li>View personal grades and attendance</li>
+                            <li>Track academic progress over time</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/student.js"></script>
+</body>
+</html>

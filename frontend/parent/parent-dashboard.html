@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard - ShuleAI</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/parent.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="parent-dashboard">
+    <!-- Authentication Check -->
+    <script>
+        // Check if parent is logged in
+        if (!localStorage.getItem('parentLoggedIn')) {
+            window.location.href = 'parent.html';
+        }
+        
+        // Load parent data
+        const parentData = {
+            name: localStorage.getItem('parentName') || 'John Smith',
+            id: localStorage.getItem('parentId') || 'PARENT001',
+            children: JSON.parse(localStorage.getItem('parentChildren') || '[{"name": "Emma Smith", "grade": "Grade 10A", "id": "STU001"}]')
+        };
+    </script>
+
+    <!-- Top Navigation -->
+    <nav class="parent-nav">
+        <div class="nav-left">
+            <div class="logo">
+                <i class="fas fa-user-friends"></i>
+                <div>
+                    <h2>Shule<span class="ai">AI</span> Parent</h2>
+                    <p class="role-tag">Monitoring Dashboard</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-center">
+            <div class="child-selector" id="childSelector">
+                <i class="fas fa-child"></i>
+                <div class="child-info">
+                    <h3 id="selectedChildName">Emma Smith</h3>
+                    <p id="selectedChildGrade">Grade 10A • Student ID: STU001</p>
+                </div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <div class="alert-bell" id="alertBell">
+                <i class="fas fa-bell"></i>
+                <span class="badge" id="alertCount">3</span>
+            </div>
+            <div class="parent-profile" id="parentProfile">
+                <img src="https://ui-avatars.com/api/?name=John+Smith&background=FFD166&color=000" alt="Parent">
+                <div class="profile-info">
+                    <span class="parent-name" id="parentName">John Smith</span>
+                    <span class="parent-id">Parent ID: PARENT001</span>
+                </div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <button class="btn-logout" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Alerts Panel -->
+    <div class="alerts-panel" id="alertsPanel" style="display: none;">
+        <div class="panel-header">
+            <h3><i class="fas fa-bell"></i> Alerts & Notifications</h3>
+            <button class="panel-close">&times;</button>
+        </div>
+        <div class="panel-body" id="alertsList">
+            <!-- Alerts will be loaded here -->
+        </div>
+        <div class="panel-footer">
+            <a href="#" class="view-all-alerts">View All Alerts</a>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4><i class="fas fa-tachometer-alt"></i> DASHBOARD</h4>
+                    <a href="#" class="menu-item active" data-section="overview">
+                        <i class="fas fa-home"></i> Overview
+                    </a>
+                    <a href="#" class="menu-item" data-section="progress">
+                        <i class="fas fa-chart-line"></i> Progress Tracker
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-user-graduate"></i> ACADEMIC</h4>
+                    <a href="#" class="menu-item" data-section="grades">
+                        <i class="fas fa-percentage"></i> Grades & Marks
+                        <span class="badge" id="gradesCount">12</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="attendance">
+                        <i class="fas fa-calendar-check"></i> Attendance
+                        <span class="badge success" id="attendancePercent">94%</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="subjects">
+                        <i class="fas fa-book"></i> Subjects
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-bell"></i> ALERTS CENTER</h4>
+                    <a href="#" class="menu-item" data-section="alerts">
+                        <i class="fas fa-exclamation-triangle"></i> Academic Alerts
+                        <span class="badge warning" id="academicAlerts">2</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="attendance-alerts">
+                        <i class="fas fa-user-clock"></i> Attendance Alerts
+                        <span class="badge" id="attendanceAlerts">1</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="fee-alerts">
+                        <i class="fas fa-money-bill-wave"></i> Fee Alerts
+                        <span class="badge danger" id="feeAlerts">0</span>
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-lightbulb"></i> GUIDANCE</h4>
+                    <a href="#" class="menu-item" data-section="tips">
+                        <i class="fas fa-tips"></i> Parent Tips
+                        <span class="badge info" id="newTips">5</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="resources">
+                        <i class="fas fa-book-open"></i> Learning Resources
+                    </a>
+                    <a href="#" class="menu-item" data-section="did-you-know">
+                        <i class="fas fa-question-circle"></i> Did You Know?
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-money-check-alt"></i> FINANCIAL</h4>
+                    <a href="#" class="menu-item" data-section="fees">
+                        <i class="fas fa-file-invoice-dollar"></i> Fee Statement
+                    </a>
+                    <a href="#" class="menu-item" data-section="payments">
+                        <i class="fas fa-credit-card"></i> Payment History
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><i class="fas fa-cog"></i> SETTINGS</h4>
+                    <a href="#" class="menu-item" data-section="profile">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                    <a href="#" class="menu-item" data-section="notifications">
+                        <i class="fas fa-sliders-h"></i> Notifications
+                    </a>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="last-login">
+                    <i class="far fa-clock"></i>
+                    <span>Last login: <strong>Today</strong></span>
+                </div>
+                <a href="../index.html" class="back-to-home">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="welcome-content">
+                    <h1>Welcome back, <span id="welcomeParentName">John</span>!</h1>
+                    <p>Monitoring <span id="welcomeChildName">Emma Smith</span>'s academic progress in <span id="welcomeGrade">Grade 10A</span></p>
+                </div>
+                <div class="welcome-actions">
+                    <button class="btn-primary" id="quickViewBtn">
+                        <i class="fas fa-eye"></i> Quick Overview
+                    </button>
+                    <button class="btn-secondary" id="printReportBtn">
+                        <i class="fas fa-print"></i> Print Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-icon overall-grade">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="overallGrade">B+</h3>
+                        <p>Overall Grade</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> <span id="gradeTrend">+2%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon attendance">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="attendanceRate">94%</h3>
+                        <p>Attendance Rate</p>
+                    </div>
+                    <div class="stat-trend down">
+                        <i class="fas fa-arrow-down"></i> <span id="attendanceTrend">-1%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon assignments">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pendingAssignments">3</h3>
+                        <p>Pending Assignments</p>
+                    </div>
+                    <div class="stat-trend warning">
+                        <i class="fas fa-exclamation"></i> <span id="assignmentAlert">Due Soon</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon fees">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="feeStatus">Paid</h3>
+                        <p>Term Fees</p>
+                    </div>
+                    <div class="stat-trend success">
+                        <i class="fas fa-check"></i> <span id="feeStatusDetail">Up to date</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert Center -->
+            <div class="alert-center">
+                <div class="section-header">
+                    <h3><i class="fas fa-exclamation-circle"></i> Alert Center</h3>
+                    <a href="#" class="view-all" id="viewAllAlerts">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="alert-grid">
+                    <div class="alert-card academic" id="academicAlertCard">
+                        <div class="alert-header">
+                            <i class="fas fa-chart-line"></i>
+                            <h4>Academic Alert</h4>
+                            <span class="alert-time">Today</span>
+                        </div>
+                        <div class="alert-body">
+                            <p id="academicAlertText">Mathematics marks improved by 15% this term!</p>
+                        </div>
+                        <div class="alert-footer">
+                            <button class="btn-alert-action">View Details</button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-card attendance" id="attendanceAlertCard">
+                        <div class="alert-header">
+                            <i class="fas fa-user-clock"></i>
+                            <h4>Attendance Alert</h4>
+                            <span class="alert-time">Yesterday</span>
+                        </div>
+                        <div class="alert-body">
+                            <p id="attendanceAlertText">2 unexcused absences this week</p>
+                        </div>
+                        <div class="alert-footer">
+                            <button class="btn-alert-action">Contact School</button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-card guidance" id="guidanceAlertCard">
+                        <div class="alert-header">
+                            <i class="fas fa-lightbulb"></i>
+                            <h4>Parent Tip</h4>
+                            <span class="alert-time">New</span>
+                        </div>
+                        <div class="alert-body">
+                            <p id="guidanceTip">Did You Know? Regular reading improves vocabulary by 40%</p>
+                        </div>
+                        <div class="alert-footer">
+                            <button class="btn-alert-action">More Tips</button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-card fee" id="feeAlertCard">
+                        <div class="alert-header">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <h4>Fee Reminder</h4>
+                            <span class="alert-time">2 days ago</span>
+                        </div>
+                        <div class="alert-body">
+                            <p id="feeAlertText">Next installment due in 7 days</p>
+                        </div>
+                        <div class="alert-footer">
+                            <button class="btn-alert-action">Pay Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Performance -->
+            <div class="performance-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-chart-bar"></i> Academic Performance</h3>
+                    <div class="section-actions">
+                        <select id="termSelect">
+                            <option value="term1">Term 1</option>
+                            <option value="term2">Term 2</option>
+                            <option value="term3">Term 3</option>
+                        </select>
+                        <button class="btn-secondary" id="exportGrades">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="performance-grid">
+                    <div class="grades-card">
+                        <h4>Subject Grades</h4>
+                        <div class="grades-list" id="gradesList">
+                            <!-- Grades will be loaded here -->
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="card-link" id="viewFullReport">View Full Report <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-card">
+                        <h4>Progress Over Time</h4>
+                        <div class="progress-chart" id="progressChart">
+                            <!-- Progress chart will be loaded here -->
+                        </div>
+                        <div class="progress-summary">
+                            <div class="summary-item">
+                                <i class="fas fa-arrow-up text-success"></i>
+                                <div>
+                                    <h5>Improving</h5>
+                                    <p>3 subjects</p>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-minus text-warning"></i>
+                                <div>
+                                    <h5>Stable</h5>
+                                    <p>4 subjects</p>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-arrow-down text-danger"></i>
+                                <div>
+                                    <h5>Needs Attention</h5>
+                                    <p>1 subject</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Tracking -->
+            <div class="attendance-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-calendar-alt"></i> Attendance Tracking</h3>
+                    <select id="attendanceRange">
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="term">This Term</option>
+                    </select>
+                </div>
+                
+                <div class="attendance-container">
+                    <div class="attendance-stats">
+                        <div class="stat-box present">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <h4 id="presentDays">18</h4>
+                                <p>Days Present</p>
+                            </div>
+                        </div>
+                        <div class="stat-box absent">
+                            <i class="fas fa-times-circle"></i>
+                            <div>
+                                <h4 id="absentDays">2</h4>
+                                <p>Days Absent</p>
+                            </div>
+                        </div>
+                        <div class="stat-box late">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h4 id="lateDays">1</h4>
+                                <p>Times Late</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="attendance-calendar" id="attendanceCalendar">
+                        <!-- Calendar will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parent Guidance -->
+            <div class="guidance-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-lightbulb"></i> Educational Guidance</h3>
+                    <button class="btn-primary" id="refreshTips">
+                        <i class="fas fa-sync"></i> Refresh Tips
+                    </button>
+                </div>
+                
+                <div class="guidance-tips" id="guidanceTips">
+                    <!-- Tips will be loaded here -->
+                </div>
+                
+                <div class="did-you-know" id="didYouKnow">
+                    <div class="dyk-header">
+                        <i class="fas fa-question-circle"></i>
+                        <h4>Did You Know?</h4>
+                    </div>
+                    <div class="dyk-content">
+                        <p id="dykFact">Students who eat breakfast perform 20% better in morning classes.</p>
+                    </div>
+                    <div class="dyk-footer">
+                        <button class="btn-secondary" id="nextFact">
+                            <i class="fas fa-arrow-right"></i> Next Fact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fee Status -->
+            <div class="fee-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-file-invoice-dollar"></i> Fee Status</h3>
+                    <button class="btn-primary" id="makePaymentBtn">
+                        <i class="fas fa-credit-card"></i> Make Payment
+                    </button>
+                </div>
+                
+                <div class="fee-summary">
+                    <div class="fee-card">
+                        <div class="fee-header">
+                            <i class="fas fa-receipt"></i>
+                            <h4>Term 1, 2024</h4>
+                        </div>
+                        <div class="fee-details">
+                            <div class="fee-row">
+                                <span class="label">Total Fees:</span>
+                                <span class="value">$1,200.00</span>
+                            </div>
+                            <div class="fee-row">
+                                <span class="label">Amount Paid:</span>
+                                <span class="value">$1,200.00</span>
+                            </div>
+                            <div class="fee-row">
+                                <span class="label">Balance:</span>
+                                <span class="value success">$0.00</span>
+                            </div>
+                            <div class="fee-row">
+                                <span class="label">Due Date:</span>
+                                <span class="value">Mar 31, 2024</span>
+                            </div>
+                        </div>
+                        <div class="fee-status">
+                            <span class="status-badge success">Paid in Full</span>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-history">
+                        <h4>Recent Payments</h4>
+                        <div class="history-list" id="paymentHistory">
+                            <!-- Payment history will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Child Selector Dropdown -->
+    <div class="child-selector-dropdown" id="childDropdown" style="display: none;">
+        <div class="dropdown-header">
+            <h4>Select Child</h4>
+        </div>
+        <div class="dropdown-body" id="childrenList">
+            <!-- Children will be loaded here -->
+        </div>
+        <div class="dropdown-footer">
+            <button class="btn-secondary" id="manageChildren">
+                <i class="fas fa-cog"></i> Manage Children
+            </button>
+        </div>
+    </div>
+
+    <!-- Profile Dropdown -->
+    <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+        <div class="dropdown-item">
+            <i class="fas fa-user"></i>
+            <span>My Profile</span>
+        </div>
+        <div class="dropdown-item">
+            <i class="fas fa-bell"></i>
+            <span>Notification Settings</span>
+        </div>
+        <div class="dropdown-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Help & Support</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item" id="logoutOption">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </div>
+    </div>
+
+    <!-- Quick Overview Modal -->
+    <div class="modal-overlay" id="quickOverviewModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-eye"></i> Quick Overview</h3>
+                <button class="modal-close" id="overviewModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="overviewContent">
+                    <!-- Overview content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="paymentModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-credit-card"></i> Make Payment</h3>
+                <button class="modal-close" id="paymentModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-form" id="paymentForm">
+                    <!-- Payment form will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guidance Modal -->
+    <div class="modal-overlay" id="guidanceModal" style="display: none;">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3><i class="fas fa-lightbulb"></i> Parent Guidance Center</h3>
+                <button class="modal-close" id="guidanceModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="guidance-content" id="guidanceContent">
+                    <!-- Guidance content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/parent.js"></script>
+    <script>
+        // ==================== PARENT DASHBOARD SCRIPT ====================
+        (function() {
+            'use strict';
+            
+            // Parent Dashboard Module
+            const ParentDashboard = {
+                // Configuration
+                config: {
+                    sessionTimeout: 30 * 60 * 1000,
+                    alertCheckInterval: 30000,
+                    demoMode: true,
+                    childData: {
+                        name: "Emma Smith",
+                        grade: "Grade 10A",
+                        id: "STU001",
+                        subjects: [
+                            { name: "Mathematics", grade: "A", marks: 85, teacher: "Mr. Johnson", trend: "up" },
+                            { name: "Science", grade: "B+", marks: 82, teacher: "Ms. Williams", trend: "stable" },
+                            { name: "English", grade: "A-", marks: 88, teacher: "Mrs. Brown", trend: "up" },
+                            { name: "History", grade: "B", marks: 78, teacher: "Mr. Davis", trend: "down" },
+                            { name: "Geography", grade: "B+", marks: 80, teacher: "Ms. Taylor", trend: "stable" },
+                            { name: "Computer Science", grade: "A", marks: 92, teacher: "Mr. Wilson", trend: "up" }
+                        ]
+                    }
+                },
+                
+                // State management
+                state: {
+                    initialized: false,
+                    currentChild: 0,
+                    children: [],
+                    alerts: [],
+                    guidanceTips: [],
+                    paymentHistory: [],
+                    attendanceData: {},
+                    feeData: {}
+                },
+                
+                // Initialize dashboard
+                init: function() {
+                    if (this.state.initialized) return;
+                    
+                    this.checkAuth();
+                    this.loadParentData();
+                    this.loadChildren();
+                    this.setupEventListeners();
+                    this.loadDashboardData();
+                    this.renderDashboard();
+                    this.startAlertCheck();
+                    this.startSessionTimer();
+                    
+                    this.state.initialized = true;
+                    console.log('Parent Dashboard initialized');
+                },
+                
+                // Check authentication
+                checkAuth: function() {
+                    if (!localStorage.getItem('parentLoggedIn')) {
+                        window.location.href = 'parent.html';
+                        return false;
+                    }
+                    return true;
+                },
+                
+                // Load parent data
+                loadParentData: function() {
+                    // Update UI with parent info
+                    const parentName = document.getElementById('parentName');
+                    const welcomeName = document.getElementById('welcomeParentName');
+                    
+                    if (parentName) {
+                        parentName.textContent = localStorage.getItem('parentName') || 'John Smith';
+                    }
+                    
+                    if (welcomeName) {
+                        welcomeName.textContent = (localStorage.getItem('parentName') || 'John').split(' ')[0];
+                    }
+                },
+                
+                // Load children data
+                loadChildren: function() {
+                    // Check if we have children data in localStorage
+                    let children = JSON.parse(localStorage.getItem('parentChildren') || 'null');
+                    
+                    if (!children || children.length === 0) {
+                        // Use demo data
+                        children = [
+                            {
+                                name: "Emma Smith",
+                                grade: "Grade 10A",
+                                id: "STU001",
+                                avatar: "E"
+                            },
+                            {
+                                name: "James Smith",
+                                grade: "Grade 8B",
+                                id: "STU002",
+                                avatar: "J"
+                            }
+                        ];
+                        localStorage.setItem('parentChildren', JSON.stringify(children));
+                    }
+                    
+                    this.state.children = children;
+                    this.state.currentChild = 0;
+                    
+                    // Update child selector
+                    this.updateChildSelector();
+                },
+                
+                // Setup event listeners
+                setupEventListeners: function() {
+                    // Logout buttons
+                    document.getElementById('logoutBtn').addEventListener('click', this.logout.bind(this));
+                    document.getElementById('logoutOption').addEventListener('click', this.logout.bind(this));
+                    
+                    // Profile dropdown
+                    document.getElementById('parentProfile').addEventListener('click', this.toggleProfileDropdown.bind(this));
+                    
+                    // Child selector
+                    document.getElementById('childSelector').addEventListener('click', this.toggleChildDropdown.bind(this));
+                    
+                    // Alert bell
+                    document.getElementById('alertBell').addEventListener('click', this.toggleAlertsPanel.bind(this));
+                    
+                    // Alert panel close
+                    document.querySelector('.panel-close').addEventListener('click', this.closeAlertsPanel.bind(this));
+                    
+                    // Menu items
+                    document.querySelectorAll('.menu-item').forEach(item => {
+                        item.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const section = item.getAttribute('data-section');
+                            this.handleMenuClick(section, item);
+                        });
+                    });
+                    
+                    // Quick action buttons
+                    document.getElementById('quickViewBtn').addEventListener('click', this.openQuickOverview.bind(this));
+                    document.getElementById('printReportBtn').addEventListener('click', this.printReport.bind(this));
+                    document.getElementById('makePaymentBtn').addEventListener('click', this.openPaymentModal.bind(this));
+                    document.getElementById('refreshTips').addEventListener('click', this.refreshGuidanceTips.bind(this));
+                    document.getElementById('nextFact').addEventListener('click', this.showNextFact.bind(this));
+                    
+                    // Alert actions
+                    document.getElementById('viewAllAlerts').addEventListener('click', this.viewAllAlerts.bind(this));
+                    document.querySelectorAll('.btn-alert-action').forEach(btn => {
+                        btn.addEventListener('click', this.handleAlertAction.bind(this));
+                    });
+                    
+                    // Modal close buttons
+                    document.getElementById('overviewModalClose').addEventListener('click', this.closeQuickOverview.bind(this));
+                    document.getElementById('paymentModalClose').addEventListener('click', this.closePaymentModal.bind(this));
+                    document.getElementById('guidanceModalClose').addEventListener('click', this.closeGuidanceModal.bind(this));
+                    
+                    // Close dropdowns on outside click
+                    document.addEventListener('click', (e) => {
+                        const profileDropdown = document.getElementById('profileDropdown');
+                        const profile = document.getElementById('parentProfile');
+                        const childDropdown = document.getElementById('childDropdown');
+                        const childSelector = document.getElementById('childSelector');
+                        const alertsPanel = document.getElementById('alertsPanel');
+                        const alertBell = document.getElementById('alertBell');
+                        
+                        if (profileDropdown && profile && !profile.contains(e.target) && !profileDropdown.contains(e.target)) {
+                            profileDropdown.style.display = 'none';
+                        }
+                        
+                        if (childDropdown && childSelector && !childSelector.contains(e.target) && !childDropdown.contains(e.target)) {
+                            childDropdown.style.display = 'none';
+                        }
+                        
+                        if (alertsPanel && alertBell && !alertBell.contains(e.target) && !alertsPanel.contains(e.target)) {
+                            alertsPanel.style.display = 'none';
+                        }
+                    });
+                    
+                    // Close modals on outside click
+                    document.querySelectorAll('.modal-overlay').forEach(modal => {
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) {
+                                if (modal.id === 'quickOverviewModal') this.closeQuickOverview();
+                                else if (modal.id === 'paymentModal') this.closePaymentModal();
+                                else if (modal.id === 'guidanceModal') this.closeGuidanceModal();
+                            }
+                        });
+                    });
+                    
+                    // Manage children button
+                    document.getElementById('manageChildren').addEventListener('click', this.manageChildren.bind(this));
+                    
+                    // Export grades button
+                    document.getElementById('exportGrades').addEventListener('click', this.exportGrades.bind(this));
+                    
+                    // View full report link
+                    document.getElementById('viewFullReport').addEventListener('click', this.viewFullReport.bind(this));
+                    
+                    // Term select change
+                    document.getElementById('termSelect').addEventListener('change', this.updateTermData.bind(this));
+                    
+                    // Attendance range change
+                    document.getElementById('attendanceRange').addEventListener('change', this.updateAttendanceData.bind(this));
+                },
+                
+                // Load dashboard data
+                loadDashboardData: function() {
+                    this.loadAlerts();
+                    this.loadGuidanceTips();
+                    this.loadPaymentHistory();
+                    this.loadAttendanceData();
+                    this.loadFeeData();
+                },
+                
+                // Render dashboard
+                renderDashboard: function() {
+                    this.updateChildInfo();
+                    this.renderGrades();
+                    this.renderProgressChart();
+                    this.renderAttendanceCalendar();
+                    this.renderGuidanceTips();
+                    this.renderPaymentHistory();
+                    this.updateStats();
+                    this.renderAlerts();
+                },
+                
+                // Update child selector
+                updateChildSelector: function() {
+                    const childName = document.getElementById('selectedChildName');
+                    const childGrade = document.getElementById('selectedChildGrade');
+                    const welcomeChild = document.getElementById('welcomeChildName');
+                    const welcomeGrade = document.getElementById('welcomeGrade');
+                    
+                    if (this.state.children.length > 0) {
+                        const child = this.state.children[this.state.currentChild];
+                        
+                        if (childName) childName.textContent = child.name;
+                        if (childGrade) childGrade.textContent = `${child.grade} • Student ID: ${child.id}`;
+                        if (welcomeChild) welcomeChild.textContent = child.name;
+                        if (welcomeGrade) welcomeGrade.textContent = child.grade;
+                    }
+                    
+                    // Update children list in dropdown
+                    this.renderChildrenList();
+                },
+                
+                // Render children list
+                renderChildrenList: function() {
+                    const childrenList = document.getElementById('childrenList');
+                    if (!childrenList) return;
+                    
+                    childrenList.innerHTML = '';
+                    
+                    this.state.children.forEach((child, index) => {
+                        const childItem = document.createElement('div');
+                        childItem.className = `child-item ${index === this.state.currentChild ? 'active' : ''}`;
+                        childItem.dataset.index = index;
+                        childItem.innerHTML = `
+                            <div class="child-avatar">${child.avatar || child.name.charAt(0)}</div>
+                            <div class="child-details">
+                                <h5>${child.name}</h5>
+                                <p>${child.grade} • ${child.id}</p>
+                            </div>
+                            ${index === this.state.currentChild ? '<i class="fas fa-check"></i>' : ''}
+                        `;
+                        
+                        childItem.addEventListener('click', () => {
+                            this.switchChild(index);
+                        });
+                        
+                        childrenList.appendChild(childItem);
+                    });
+                },
+                
+                // Switch child
+                switchChild: function(index) {
+                    if (index >= 0 && index < this.state.children.length && index !== this.state.currentChild) {
+                        this.state.currentChild = index;
+                        this.updateChildInfo();
+                        this.renderDashboard();
+                        this.closeChildDropdown();
+                        
+                        this.showNotification(`Switched to ${this.state.children[index].name}'s profile`, 'success');
+                    }
+                },
+                
+                // Update child info
+                updateChildInfo: function() {
+                    this.updateStats();
+                    this.renderGrades();
+                    this.renderProgressChart();
+                },
+                
+                // Load alerts
+                loadAlerts: function() {
+                    // Demo alerts data
+                    this.state.alerts = [
+                        {
+                            id: 1,
+                            type: 'academic',
+                            title: 'Mathematics Improvement',
+                            message: 'Marks improved by 15% this term',
+                            time: 'Today',
+                            read: false,
+                            action: 'viewDetails'
+                        },
+                        {
+                            id: 2,
+                            type: 'attendance',
+                            title: 'Attendance Alert',
+                            message: '2 unexcused absences this week',
+                            time: 'Yesterday',
+                            read: false,
+                            action: 'contactSchool'
+                        },
+                        {
+                            id: 3,
+                            type: 'guidance',
+                            title: 'Parent Tip',
+                            message: 'Did You Know? Regular reading improves vocabulary by 40%',
+                            time: 'New',
+                            read: false,
+                            action: 'moreTips'
+                        },
+                        {
+                            id: 4,
+                            type: 'fee',
+                            title: 'Fee Reminder',
+                            message: 'Next installment due in 7 days',
+                            time: '2 days ago',
+                            read: true,
+                            action: 'payNow'
+                        },
+                        {
+                            id: 5,
+                            type: 'academic',
+                            title: 'Science Assignment',
+                            message: 'New assignment posted, due next Monday',
+                            time: '3 days ago',
+                            read: true,
+                            action: 'viewAssignment'
+                        }
+                    ];
+                },
+                
+                // Render alerts
+                renderAlerts: function() {
+                    // Update alert count
+                    const unreadCount = this.state.alerts.filter(alert => !alert.read).length;
+                    document.getElementById('alertCount').textContent = unreadCount;
+                    
+                    // Update alert cards
+                    const academicAlert = this.state.alerts.find(a => a.type === 'academic' && !a.read);
+                    const attendanceAlert = this.state.alerts.find(a => a.type === 'attendance' && !a.read);
+                    const guidanceAlert = this.state.alerts.find(a => a.type === 'guidance' && !a.read);
+                    const feeAlert = this.state.alerts.find(a => a.type === 'fee' && !a.read);
+                    
+                    if (academicAlert) {
+                        document.getElementById('academicAlertText').textContent = academicAlert.message;
+                    }
+                    
+                    if (attendanceAlert) {
+                        document.getElementById('attendanceAlertText').textContent = attendanceAlert.message;
+                    }
+                    
+                    if (guidanceAlert) {
+                        document.getElementById('guidanceTip').textContent = guidanceAlert.message;
+                    }
+                    
+                    if (feeAlert) {
+                        document.getElementById('feeAlertText').textContent = feeAlert.message;
+                    }
+                    
+                    // Update alert badges
+                    document.getElementById('academicAlerts').textContent = 
+                        this.state.alerts.filter(a => a.type === 'academic' && !a.read).length;
+                    document.getElementById('attendanceAlerts').textContent = 
+                        this.state.alerts.filter(a => a.type === 'attendance' && !a.read).length;
+                    document.getElementById('feeAlerts').textContent = 
+                        this.state.alerts.filter(a => a.type === 'fee' && !a.read).length;
+                    
+                    // Render alerts panel
+                    this.renderAlertsPanel();
+                },
+                
+                // Render alerts panel
+                renderAlertsPanel: function() {
+                    const alertsList = document.getElementById('alertsList');
+                    if (!alertsList) return;
+                    
+                    alertsList.innerHTML = '';
+                    
+                    this.state.alerts.forEach(alert => {
+                        const alertItem = document.createElement('div');
+                        alertItem.className = `alert-item ${alert.type} ${alert.read ? 'read' : 'unread'}`;
+                        alertItem.innerHTML = `
+                            <div class="alert-icon">
+                                <i class="fas fa-${this.getAlertIcon(alert.type)}"></i>
+                            </div>
+                            <div class="alert-content">
+                                <h5>${alert.title}</h5>
+                                <p>${alert.message}</p>
+                                <span class="alert-time">${alert.time}</span>
+                            </div>
+                            ${!alert.read ? '<span class="unread-dot"></span>' : ''}
+                        `;
+                        
+                        alertItem.addEventListener('click', () => {
+                            this.markAlertAsRead(alert.id);
+                            this.handleAlertAction(alert.action);
+                        });
+                        
+                        alertsList.appendChild(alertItem);
+                    });
+                },
+                
+                // Get alert icon
+                getAlertIcon: function(type) {
+                    const icons = {
+                        'academic': 'chart-line',
+                        'attendance': 'user-clock',
+                        'guidance': 'lightbulb',
+                        'fee': 'money-bill-wave'
+                    };
+                    return icons[type] || 'bell';
+                },
+                
+                // Mark alert as read
+                markAlertAsRead: function(alertId) {
+                    const alert = this.state.alerts.find(a => a.id === alertId);
+                    if (alert && !alert.read) {
+                        alert.read = true;
+                        this.renderAlerts();
+                        this.showNotification('Alert marked as read', 'info');
+                    }
+                },
+                
+                // Handle alert action
+                handleAlertAction: function(action) {
+                    switch (action) {
+                        case 'viewDetails':
+                            this.openQuickOverview();
+                            break;
+                        case 'contactSchool':
+                            this.contactSchool();
+                            break;
+                        case 'moreTips':
+                            this.openGuidanceModal();
+                            break;
+                        case 'payNow':
+                            this.openPaymentModal();
+                            break;
+                        case 'viewAssignment':
+                            this.viewAssignment();
+                            break;
+                    }
+                },
+                
+                // Load guidance tips
+                loadGuidanceTips: function() {
+                    // Demo guidance tips
+                    this.state.guidanceTips = [
+                        {
+                            id: 1,
+                            title: 'Homework Routine',
+                            content: 'Establish a consistent homework routine. Same time, same place every day.',
+                            category: 'routine'
+                        },
+                        {
+                            id: 2,
+                            title: 'Reading Together',
+                            content: 'Read with your child 20 minutes daily. Discuss what you read.',
+                            category: 'literacy'
+                        },
+                        {
+                            id: 3,
+                            title: 'Healthy Sleep',
+                            content: 'Ensure 8-10 hours of sleep for optimal brain function and memory.',
+                            category: 'health'
+                        },
+                        {
+                            id: 4,
+                            title: 'Positive Reinforcement',
+                            content: 'Praise effort, not just results. "I see how hard you worked on this!"',
+                            category: 'motivation'
+                        },
+                        {
+                            id: 5,
+                            title: 'Screen Time Balance',
+                            content: 'Limit recreational screen time to 1-2 hours daily during school days.',
+                            category: 'technology'
+                        }
+                    ];
+                    
+                    // Demo "Did You Know?" facts
+                    this.state.didYouKnowFacts = [
+                        "Students who eat breakfast perform 20% better in morning classes.",
+                        "Physical activity boosts brain function and improves concentration.",
+                        "Learning a musical instrument improves mathematical ability.",
+                        "Handwriting notes helps with memory retention better than typing.",
+                        "Regular family meals improve vocabulary and academic performance."
+                    ];
+                },
+                
+                // Render guidance tips
+                renderGuidanceTips: function() {
+                    const guidanceTips = document.getElementById('guidanceTips');
+                    if (!guidanceTips) return;
+                    
+                    guidanceTips.innerHTML = '';
+                    
+                    // Show first 3 tips
+                    this.state.guidanceTips.slice(0, 3).forEach(tip => {
+                        const tipCard = document.createElement('div');
+                        tipCard.className = 'tip-card';
+                        tipCard.innerHTML = `
+                            <div class="tip-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h5>${tip.title}</h5>
+                                <p>${tip.content}</p>
+                            </div>
+                        `;
+                        
+                        tipCard.addEventListener('click', () => {
+                            this.openTipDetail(tip.id);
+                        });
+                        
+                        guidanceTips.appendChild(tipCard);
+                    });
+                    
+                    // Update "Did You Know?" fact
+                    const randomFact = this.state.didYouKnowFacts[
+                        Math.floor(Math.random() * this.state.didYouKnowFacts.length)
+                    ];
+                    document.getElementById('dykFact').textContent = randomFact;
+                },
+                
+                // Load payment history
+                loadPaymentHistory: function() {
+                    // Demo payment history
+                    this.state.paymentHistory = [
+                        {
+                            id: 1,
+                            date: '2024-03-10',
+                            amount: 400.00,
+                            method: 'Credit Card',
+                            status: 'Completed',
+                            reference: 'PAY001234'
+                        },
+                        {
+                            id: 2,
+                            date: '2024-02-15',
+                            amount: 400.00,
+                            method: 'Bank Transfer',
+                            status: 'Completed',
+                            reference: 'PAY001233'
+                        },
+                        {
+                            id: 3,
+                            date: '2024-01-20',
+                            amount: 400.00,
+                            method: 'Credit Card',
+                            status: 'Completed',
+                            reference: 'PAY001232'
+                        }
+                    ];
+                },
+                
+                // Render payment history
+                renderPaymentHistory: function() {
+                    const paymentHistory = document.getElementById('paymentHistory');
+                    if (!paymentHistory) return;
+                    
+                    paymentHistory.innerHTML = '';
+                    
+                    this.state.paymentHistory.forEach(payment => {
+                        const historyItem = document.createElement('div');
+                        historyItem.className = 'history-item';
+                        historyItem.innerHTML = `
+                            <div class="history-date">
+                                <i class="far fa-calendar"></i>
+                                <span>${new Date(payment.date).toLocaleDateString()}</span>
+                            </div>
+                            <div class="history-details">
+                                <span class="amount">$${payment.amount.toFixed(2)}</span>
+                                <span class="method">${payment.method}</span>
+                            </div>
+                            <div class="history-status">
+                                <span class="status-badge success">${payment.status}</span>
+                            </div>
+                        `;
+                        
+                        paymentHistory.appendChild(historyItem);
+                    });
+                },
+                
+                // Load attendance data
+                loadAttendanceData: function() {
+                    // Demo attendance data for current month
+                    const today = new Date();
+                    const currentMonth = today.getMonth();
+                    const currentYear = today.getFullYear();
+                    
+                    this.state.attendanceData = {
+                        present: 18,
+                        absent: 2,
+                        late: 1,
+                        month: currentMonth,
+                        year: currentYear
+                    };
+                },
+                
+                // Render attendance calendar
+                renderAttendanceCalendar: function() {
+                    const attendanceCalendar = document.getElementById('attendanceCalendar');
+                    if (!attendanceCalendar) return;
+                    
+                    attendanceCalendar.innerHTML = '';
+                    
+                    // Simple calendar representation
+                    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    
+                    // Create header
+                    const header = document.createElement('div');
+                    header.className = 'calendar-header';
+                    days.forEach(day => {
+                        const dayElement = document.createElement('div');
+                        dayElement.className = 'calendar-day-header';
+                        dayElement.textContent = day;
+                        header.appendChild(dayElement);
+                    });
+                    attendanceCalendar.appendChild(header);
+                    
+                    // Create calendar grid
+                    const grid = document.createElement('div');
+                    grid.className = 'calendar-grid';
+                    
+                    // Generate demo days (1-20 for simplicity)
+                    for (let day = 1; day <= 20; day++) {
+                        const dayElement = document.createElement('div');
+                        dayElement.className = 'calendar-day';
+                        
+                        // Random attendance status for demo
+                        const rand = Math.random();
+                        let status = 'present';
+                        if (rand < 0.1) status = 'absent';
+                        else if (rand < 0.15) status = 'late';
+                        else if (rand < 0.3) status = 'weekend';
+                        else if (rand < 0.35) status = 'holiday';
+                        
+                        dayElement.className = `calendar-day ${status}`;
+                        dayElement.textContent = day;
+                        
+                        if (status === 'present') {
+                            dayElement.innerHTML = `<i class="fas fa-check"></i><span>${day}</span>`;
+                        } else if (status === 'absent') {
+                            dayElement.innerHTML = `<i class="fas fa-times"></i><span>${day}</span>`;
+                        } else if (status === 'late') {
+                            dayElement.innerHTML = `<i class="fas fa-clock"></i><span>${day}</span>`;
+                        } else if (status === 'weekend' || status === 'holiday') {
+                            dayElement.innerHTML = `<span>${day}</span>`;
+                        }
+                        
+                        grid.appendChild(dayElement);
+                    }
+                    
+                    attendanceCalendar.appendChild(grid);
+                    
+                    // Update attendance stats
+                    document.getElementById('presentDays').textContent = this.state.attendanceData.present;
+                    document.getElementById('absentDays').textContent = this.state.attendanceData.absent;
+                    document.getElementById('lateDays').textContent = this.state.attendanceData.late;
+                },
+                
+                // Load fee data
+                loadFeeData: function() {
+                    // Demo fee data
+                    this.state.feeData = {
+                        total: 1200.00,
+                        paid: 1200.00,
+                        balance: 0.00,
+                        dueDate: '2024-03-31',
+                        status: 'paid'
+                    };
+                },
+                
+                // Render grades
+                renderGrades: function() {
+                    const gradesList = document.getElementById('gradesList');
+                    if (!gradesList) return;
+                    
+                    gradesList.innerHTML = '';
+                    
+                    const childData = this.config.childData;
+                    
+                    childData.subjects.forEach(subject => {
+                        const gradeItem = document.createElement('div');
+                        gradeItem.className = 'grade-item';
+                        gradeItem.innerHTML = `
+                            <div class="subject-info">
+                                <h5>${subject.name}</h5>
+                                <p>${subject.teacher}</p>
+                            </div>
+                            <div class="grade-display">
+                                <span class="grade ${subject.grade.toLowerCase()}">${subject.grade}</span>
+                                <span class="marks">${subject.marks}%</span>
+                            </div>
+                            <div class="grade-trend ${subject.trend}">
+                                <i class="fas fa-arrow-${subject.trend}"></i>
+                            </div>
+                        `;
+                        
+                        gradesList.appendChild(gradeItem);
+                    });
+                },
+                
+                // Render progress chart
+                renderProgressChart: function() {
+                    const progressChart = document.getElementById('progressChart');
+                    if (!progressChart) return;
+                    
+                    progressChart.innerHTML = '';
+                    
+                    // Simple bar chart for demo
+                    const subjects = this.config.childData.subjects;
+                    const maxMarks = 100;
+                    
+                    subjects.forEach(subject => {
+                        const barContainer = document.createElement('div');
+                        barContainer.className = 'progress-bar-container';
+                        
+                        const barLabel = document.createElement('div');
+                        barLabel.className = 'bar-label';
+                        barLabel.textContent = subject.name.substring(0, 3);
+                        
+                        const bar = document.createElement('div');
+                        bar.className = 'progress-bar';
+                        
+                        const barFill = document.createElement('div');
+                        barFill.className = 'bar-fill';
+                        barFill.style.width = `${subject.marks}%`;
+                        barFill.style.backgroundColor = this.getGradeColor(subject.grade);
+                        
+                        const barValue = document.createElement('div');
+                        barValue.className = 'bar-value';
+                        barValue.textContent = `${subject.marks}%`;
+                        
+                        bar.appendChild(barFill);
+                        barContainer.appendChild(barLabel);
+                        barContainer.appendChild(bar);
+                        barContainer.appendChild(barValue);
+                        
+                        progressChart.appendChild(barContainer);
+                    });
+                },
+                
+                // Get grade color
+                getGradeColor: function(grade) {
+                    const gradeColors = {
+                        'A': '#28a745', // Green
+                        'A-': '#28a745',
+                        'B+': '#20c997', // Teal
+                        'B': '#ffc107',  // Yellow
+                        'B-': '#ffc107',
+                        'C+': '#fd7e14', // Orange
+                        'C': '#dc3545',  // Red
+                        'D': '#dc3545',
+                        'F': '#6c757d'   // Gray
+                    };
+                    
+                    return gradeColors[grade] || '#6c757d';
+                },
+                
+                // Update stats
+                updateStats: function() {
+                    const childData = this.config.childData;
+                    
+                    // Calculate average marks
+                    const avgMarks = childData.subjects.reduce((sum, subj) => sum + subj.marks, 0) / childData.subjects.length;
+                    
+                    // Convert to grade
+                    let overallGrade = 'B';
+                    if (avgMarks >= 85) overallGrade = 'A';
+                    else if (avgMarks >= 80) overallGrade = 'A-';
+                    else if (avgMarks >= 75) overallGrade = 'B+';
+                    else if (avgMarks >= 70) overallGrade = 'B';
+                    else if (avgMarks >= 65) overallGrade = 'C+';
+                    else if (avgMarks >= 60) overallGrade = 'C';
+                    else if (avgMarks >= 50) overallGrade = 'D';
+                    else overallGrade = 'F';
+                    
+                    // Update overall grade
+                    document.getElementById('overallGrade').textContent = overallGrade;
+                    
+                    // Update attendance rate
+                    const attendanceRate = Math.round(
+                        (this.state.attendanceData.present / 
+                         (this.state.attendanceData.present + this.state.attendanceData.absent)) * 100
+                    );
+                    document.getElementById('attendanceRate').textContent = attendanceRate + '%';
+                    
+                    // Update pending assignments
+                    document.getElementById('pendingAssignments').textContent = '3';
+                    
+                    // Update fee status
+                    document.getElementById('feeStatus').textContent = 
+                        this.state.feeData.balance === 0 ? 'Paid' : 'Pending';
+                    
+                    // Update grade trend
+                    document.getElementById('gradeTrend').textContent = '+2%';
+                    
+                    // Update attendance trend
+                    document.getElementById('attendanceTrend').textContent = '-1%';
+                    
+                    // Update assignment alert
+                    document.getElementById('assignmentAlert').textContent = 'Due Soon';
+                    
+                    // Update fee status detail
+                    document.getElementById('feeStatusDetail').textContent = 
+                        this.state.feeData.balance === 0 ? 'Up to date' : `$${this.state.feeData.balance} due`;
+                    
+                    // Update tips badge
+                    document.getElementById('newTips').textContent = '5';
+                },
+                
+                // Toggle profile dropdown
+                toggleProfileDropdown: function() {
+                    const dropdown = document.getElementById('profileDropdown');
+                    if (dropdown) {
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    }
+                },
+                
+                // Toggle child dropdown
+                toggleChildDropdown: function() {
+                    const dropdown = document.getElementById('childDropdown');
+                    if (dropdown) {
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    }
+                },
+                
+                // Close child dropdown
+                closeChildDropdown: function() {
+                    document.getElementById('childDropdown').style.display = 'none';
+                },
+                
+                // Toggle alerts panel
+                toggleAlertsPanel: function() {
+                    const panel = document.getElementById('alertsPanel');
+                    if (panel) {
+                        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+                    }
+                },
+                
+                // Close alerts panel
+                closeAlertsPanel: function() {
+                    document.getElementById('alertsPanel').style.display = 'none';
+                },
+                
+                // Handle menu click
+                handleMenuClick: function(section, element) {
+                    // Update active state
+                    document.querySelectorAll('.menu-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    element.classList.add('active');
+                    
+                    // Handle different sections
+                    switch (section) {
+                        case 'grades':
+                            this.openQuickOverview();
+                            break;
+                        case 'alerts':
+                            this.toggleAlertsPanel();
+                            break;
+                        case 'tips':
+                        case 'did-you-know':
+                            this.openGuidanceModal();
+                            break;
+                        case 'fees':
+                            this.openPaymentModal();
+                            break;
+                        default:
+                            this.showNotification(`Opening ${section.replace('-', ' ')}...`, 'info');
+                            break;
+                    }
+                },
+                
+                // Open quick overview
+                openQuickOverview: function() {
+                    const modal = document.getElementById('quickOverviewModal');
+                    const content = document.getElementById('overviewContent');
+                    
+                    if (modal && content) {
+                        const child = this.state.children[this.state.currentChild];
+                        const childData = this.config.childData;
+                        
+                        content.innerHTML = `
+                            <div class="overview-summary">
+                                <div class="overview-header">
+                                    <div class="child-avatar large">${child.name.charAt(0)}</div>
+                                    <div class="child-info">
+                                        <h4>${child.name}</h4>
+                                        <p>${child.grade} • ${child.id}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="overview-stats">
+                                    <div class="stat">
+                                        <span class="label">Overall Grade:</span>
+                                        <span class="value grade-a">B+</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="label">Attendance:</span>
+                                        <span class="value">94%</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="label">Pending Assignments:</span>
+                                        <span class="value">3</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="overview-subjects">
+                                    <h5>Subject Performance</h5>
+                                    <div class="subjects-list">
+                                        ${childData.subjects.map(subject => `
+                                            <div class="subject-row">
+                                                <span class="subject-name">${subject.name}</span>
+                                                <span class="subject-grade ${subject.grade.toLowerCase()}">${subject.grade}</span>
+                                                <span class="subject-marks">${subject.marks}%</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                
+                                <div class="overview-actions">
+                                    <button class="btn-primary" onclick="ParentDashboard.viewFullReport()">
+                                        <i class="fas fa-file-alt"></i> Full Report
+                                    </button>
+                                    <button class="btn-secondary" onclick="ParentDashboard.contactTeacher()">
+                                        <i class="fas fa-envelope"></i> Contact Teacher
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        modal.style.display = 'flex';
+                    }
+                },
+                
+                // Close quick overview
+                closeQuickOverview: function() {
+                    document.getElementById('quickOverviewModal').style.display = 'none';
+                },
+                
+                // Open payment modal
+                openPaymentModal: function() {
+                    const modal = document.getElementById('paymentModal');
+                    const form = document.getElementById('paymentForm');
+                    
+                    if (modal && form) {
+                        form.innerHTML = `
+                            <div class="payment-summary">
+                                <h4>Payment Summary</h4>
+                                <div class="summary-details">
+                                    <div class="detail-row">
+                                        <span>Student:</span>
+                                        <span>${this.state.children[this.state.currentChild].name}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span>Outstanding Balance:</span>
+                                        <span class="balance">$${this.state.feeData.balance.toFixed(2)}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span>Due Date:</span>
+                                        <span>${new Date(this.state.feeData.dueDate).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-methods">
+                                <h4>Select Payment Method</h4>
+                                <div class="method-options">
+                                    <label class="method-option">
+                                        <input type="radio" name="paymentMethod" value="card" checked>
+                                        <i class="fab fa-cc-visa"></i>
+                                        <span>Credit/Debit Card</span>
+                                    </label>
+                                    <label class="method-option">
+                                        <input type="radio" name="paymentMethod" value="bank">
+                                        <i class="fas fa-university"></i>
+                                        <span>Bank Transfer</span>
+                                    </label>
+                                    <label class="method-option">
+                                        <input type="radio" name="paymentMethod" value="mobile">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>Mobile Money</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-amount">
+                                <h4>Payment Amount</h4>
+                                <div class="amount-options">
+                                    <label class="amount-option">
+                                        <input type="radio" name="paymentAmount" value="full" checked>
+                                        <span>Full Balance: $${this.state.feeData.balance.toFixed(2)}</span>
+                                    </label>
+                                    <label class="amount-option">
+                                        <input type="radio" name="paymentAmount" value="partial">
+                                        <span>Partial Payment:</span>
+                                        <input type="number" class="partial-amount" placeholder="Enter amount" min="1" max="${this.state.feeData.balance}">
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-actions">
+                                <button class="btn-secondary" onclick="ParentDashboard.closePaymentModal()">
+                                    Cancel
+                                </button>
+                                <button class="btn-primary" onclick="ParentDashboard.processPayment()">
+                                    <i class="fas fa-lock"></i> Proceed to Payment
+                                </button>
+                            </div>
+                        `;
+                        
+                        modal.style.display = 'flex';
+                    }
+                },
+                
+                // Close payment modal
+                closePaymentModal: function() {
+                    document.getElementById('paymentModal').style.display = 'none';
+                },
+                
+                // Open guidance modal
+                openGuidanceModal: function() {
+                    const modal = document.getElementById('guidanceModal');
+                    const content = document.getElementById('guidanceContent');
+                    
+                    if (modal && content) {
+                        content.innerHTML = `
+                            <div class="guidance-tabs">
+                                <button class="tab-btn active" data-tab="tips">Parent Tips</button>
+                                <button class="tab-btn" data-tab="resources">Resources</button>
+                                <button class="tab-btn" data-tab="faq">FAQ</button>
+                            </div>
+                            
+                            <div class="tab-content active" id="tips-tab">
+                                <div class="tips-grid">
+                                    ${this.state.guidanceTips.map(tip => `
+                                        <div class="tip-card-large">
+                                            <div class="tip-icon">
+                                                <i class="fas fa-lightbulb"></i>
+                                            </div>
+                                            <div class="tip-content">
+                                                <h5>${tip.title}</h5>
+                                                <p>${tip.content}</p>
+                                                <span class="tip-category">${tip.category}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <div class="tab-content" id="resources-tab">
+                                <div class="resources-list">
+                                    <h4>Learning Resources</h4>
+                                    <div class="resource-item">
+                                        <i class="fas fa-book"></i>
+                                        <div>
+                                            <h5>Math Practice Sheets</h5>
+                                            <p>Grade-appropriate worksheets and exercises</p>
+                                            <a href="#" class="resource-link">Download PDF</a>
+                                        </div>
+                                    </div>
+                                    <div class="resource-item">
+                                        <i class="fas fa-video"></i>
+                                        <div>
+                                            <h5>Science Videos</h5>
+                                            <p>Educational videos and demonstrations</p>
+                                            <a href="#" class="resource-link">Watch Online</a>
+                                        </div>
+                                    </div>
+                                    <div class="resource-item">
+                                        <i class="fas fa-gamepad"></i>
+                                        <div>
+                                            <h5>Learning Games</h5>
+                                            <p>Interactive educational games</p>
+                                            <a href="#" class="resource-link">Play Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-content" id="faq-tab">
+                                <div class="faq-list">
+                                    <h4>Frequently Asked Questions</h4>
+                                    <div class="faq-item">
+                                        <h5>How often are grades updated?</h5>
+                                        <p>Teachers update marks weekly. You'll receive alerts for significant changes.</p>
+                                    </div>
+                                    <div class="faq-item">
+                                        <h5>What should I do if my child is struggling?</h5>
+                                        <p>Review the guidance tips, contact the teacher through the system, and consider additional support.</p>
+                                    </div>
+                                    <div class="faq-item">
+                                        <h5>How do I update my contact information?</h5>
+                                        <p>Go to Profile Settings in your dashboard to update contact details.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Add tab functionality
+                        setTimeout(() => {
+                            document.querySelectorAll('.tab-btn').forEach(btn => {
+                                btn.addEventListener('click', (e) => {
+                                    const tab = e.target.dataset.tab;
+                                    
+                                    // Update active tab
+                                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                                    
+                                    e.target.classList.add('active');
+                                    document.getElementById(`${tab}-tab`).classList.add('active');
+                                });
+                            });
+                        }, 100);
+                        
+                        modal.style.display = 'flex';
+                    }
+                },
+                
+                // Close guidance modal
+                closeGuidanceModal: function() {
+                    document.getElementById('guidanceModal').style.display = 'none';
+                },
+                
+                // Print report
+                printReport: function() {
+                    const child = this.state.children[this.state.currentChild];
+                    
+                    const reportWindow = window.open('', '_blank');
+                    reportWindow.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Report - ${child.name}</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; padding: 20px; }
+                                .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+                                .summary { margin-bottom: 30px; }
+                                .subject { margin-bottom: 15px; }
+                                .footer { margin-top: 50px; text-align: center; font-size: 12px; color: #666; }
+                                @media print {
+                                    .no-print { display: none; }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="header">
+                                <h1>Academic Progress Report</h1>
+                                <h2>${child.name}</h2>
+                                <p>${child.grade} • Report Generated: ${new Date().toLocaleDateString()}</p>
+                            </div>
+                            
+                            <div class="summary">
+                                <h3>Overall Performance</h3>
+                                <p>Overall Grade: B+</p>
+                                <p>Attendance Rate: 94%</p>
+                            </div>
+                            
+                            <div class="subjects">
+                                <h3>Subject Performance</h3>
+                                ${this.config.childData.subjects.map(subject => `
+                                    <div class="subject">
+                                        <strong>${subject.name}:</strong> ${subject.grade} (${subject.marks}%)
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="footer">
+                                <p>Generated by ShuleAI Parent Portal</p>
+                                <p>For official use only</p>
+                            </div>
+                            
+                            <div class="no-print" style="margin-top: 30px;">
+                                <button onclick="window.print()">Print Report</button>
+                                <button onclick="window.close()">Close</button>
+                            </div>
+                        </body>
+                        </html>
+                    `);
+                    reportWindow.document.close();
+                    
+                    this.showNotification('Report generated in new window', 'success');
+                },
+                
+                // Export grades
+                exportGrades: function() {
+                    const child = this.state.children[this.state.currentChild];
+                    const childData = this.config.childData;
+                    
+                    const csvContent = [
+                        ['Subject', 'Grade', 'Marks', 'Teacher', 'Trend'],
+                        ...childData.subjects.map(subject => [
+                            subject.name,
+                            subject.grade,
+                            subject.marks + '%',
+                            subject.teacher,
+                            subject.trend
+                        ])
+                    ].map(row => row.join(',')).join('\n');
+                    
+                    const blob = new Blob([csvContent], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `grades-${child.name.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.csv`;
+                    a.click();
+                    
+                    URL.revokeObjectURL(url);
+                    this.showNotification('Grades exported successfully', 'success');
+                },
+                
+                // View full report
+                viewFullReport: function() {
+                    this.closeQuickOverview();
+                    this.showNotification('Opening full academic report...', 'info');
+                    // In a real system, this would open a detailed report page
+                },
+                
+                // Contact school
+                contactSchool: function() {
+                    this.showNotification('School contact information displayed', 'info');
+                    // In a real system, this would show contact details or open contact form
+                },
+                
+                // Contact teacher
+                contactTeacher: function() {
+                    this.showNotification('Teacher contact form opened', 'info');
+                    // In a real system, this would open a teacher contact form
+                },
+                
+                // View assignment
+                viewAssignment: function() {
+                    this.showNotification('Assignment details displayed', 'info');
+                    // In a real system, this would show assignment details
+                },
+                
+                // Process payment
+                processPayment: function() {
+                    const amount = document.querySelector('input[name="paymentAmount"]:checked').value;
+                    const method = document.querySelector('input[name="paymentMethod"]:checked').value;
+                    
+                    if (amount === 'partial') {
+                        const partialAmount = parseFloat(document.querySelector('.partial-amount').value);
+                        if (!partialAmount || partialAmount <= 0) {
+                            this.showNotification('Please enter a valid amount', 'error');
+                            return;
+                        }
+                        if (partialAmount > this.state.feeData.balance) {
+                            this.showNotification('Amount cannot exceed balance', 'error');
+                            return;
+                        }
+                    }
+                    
+                    // Simulate payment processing
+                    this.showNotification('Processing payment...', 'info');
+                    
+                    setTimeout(() => {
+                        this.showNotification('Payment processed successfully!', 'success');
+                        this.closePaymentModal();
+                        
+                        // Update fee status
+                        this.state.feeData.balance = 0;
+                        this.state.feeData.status = 'paid';
+                        
+                        // Add to payment history
+                        const newPayment = {
+                            id: this.state.paymentHistory.length + 1,
+                            date: new Date().toISOString().split('T')[0],
+                            amount: this.state.feeData.balance,
+                            method: method === 'card' ? 'Credit Card' : 
+                                   method === 'bank' ? 'Bank Transfer' : 'Mobile Money',
+                            status: 'Completed',
+                            reference: 'PAY' + Math.random().toString().substr(2, 6)
+                        };
+                        
+                        this.state.paymentHistory.unshift(newPayment);
+                        this.renderPaymentHistory();
+                        this.updateStats();
+                    }, 2000);
+                },
+                
+                // Manage children
+                manageChildren: function() {
+                    this.showNotification('Children management opened', 'info');
+                    // In a real system, this would open a children management interface
+                },
+                
+                // Refresh guidance tips
+                refreshGuidanceTips: function() {
+                    this.loadGuidanceTips();
+                    this.renderGuidanceTips();
+                    this.showNotification('Tips refreshed!', 'success');
+                },
+                
+                // Show next fact
+                showNextFact: function() {
+                    const facts = this.state.didYouKnowFacts;
+                    const currentFact = document.getElementById('dykFact').textContent;
+                    let nextIndex = facts.indexOf(currentFact) + 1;
+                    
+                    if (nextIndex >= facts.length) {
+                        nextIndex = 0;
+                    }
+                    
+                    document.getElementById('dykFact').textContent = facts[nextIndex];
+                },
+                
+                // View all alerts
+                viewAllAlerts: function(e) {
+                    e.preventDefault();
+                    this.toggleAlertsPanel();
+                },
+                
+                // Open tip detail
+                openTipDetail: function(tipId) {
+                    const tip = this.state.guidanceTips.find(t => t.id === tipId);
+                    if (tip) {
+                        this.showNotification(`Tip: ${tip.title}`, 'info');
+                        // In a real system, this would open a detailed view
+                    }
+                },
+                
+                // Update term data
+                updateTermData: function() {
+                    const term = document.getElementById('termSelect').value;
+                    this.showNotification(`Loading data for ${term.replace('term', 'Term ')}...`, 'info');
+                },
+                
+                // Update attendance data
+                updateAttendanceData: function() {
+                    const range = document.getElementById('attendanceRange').value;
+                    this.showNotification(`Updating ${range} attendance data...`, 'info');
+                },
+                
+                // Start alert check
+                startAlertCheck: function() {
+                    setInterval(() => {
+                        this.checkForNewAlerts();
+                    }, this.config.alertCheckInterval);
+                },
+                
+                // Check for new alerts
+                checkForNewAlerts: function() {
+                    // Simulate occasional new alerts
+                    if (Math.random() > 0.7) {
+                        const alertTypes = ['academic', 'attendance', 'guidance', 'fee'];
+                        const type = alertTypes[Math.floor(Math.random() * alertTypes.length)];
+                        
+                        const newAlert = {
+                            id: this.state.alerts.length + 1,
+                            type: type,
+                            title: this.getAlertTitle(type),
+                            message: this.getAlertMessage(type),
+                            time: 'Just now',
+                            read: false,
+                            action: this.getAlertAction(type)
+                        };
+                        
+                        this.state.alerts.unshift(newAlert);
+                        this.renderAlerts();
+                        
+                        // Show notification
+                        this.showNotification(`New ${type} alert: ${newAlert.message.substring(0, 50)}...`, 'warning');
+                    }
+                },
+                
+                // Get alert title
+                getAlertTitle: function(type) {
+                    const titles = {
+                        'academic': 'Academic Update',
+                        'attendance': 'Attendance Notice',
+                        'guidance': 'Parent Tip',
+                        'fee': 'Fee Reminder'
+                    };
+                    return titles[type] || 'New Alert';
+                },
+                
+                // Get alert message
+                getAlertMessage: function(type) {
+                    const messages = {
+                        'academic': 'New marks have been updated for Mathematics.',
+                        'attendance': 'Your child was marked present today.',
+                        'guidance': 'Weekly parent tip: Establish a homework routine.',
+                        'fee': 'Fee payment confirmation received.'
+                    };
+                    return messages[type] || 'You have a new notification.';
+                },
+                
+                // Get alert action
+                getAlertAction: function(type) {
+                    const actions = {
+                        'academic': 'viewDetails',
+                        'attendance': 'contactSchool',
+                        'guidance': 'moreTips',
+                        'fee': 'payNow'
+                    };
+                    return actions[type] || 'viewDetails';
+                },
+                
+                // Start session timer
+                startSessionTimer: function() {
+                    setInterval(() => {
+                        this.checkSession();
+                    }, 60000);
+                },
+                
+                // Check session
+                checkSession: function() {
+                    const loginTime = localStorage.getItem('parentLoginTime');
+                    if (loginTime) {
+                        const currentTime = Date.now();
+                        const sessionAge = currentTime - parseInt(loginTime);
+                        
+                        if (sessionAge > this.config.sessionTimeout) {
+                            this.showNotification('Session expired. Redirecting to login...', 'warning');
+                            setTimeout(() => {
+                                this.logout();
+                            }, 2000);
+                        }
+                    }
+                },
+                
+                // Show notification
+                showNotification: function(message, type = 'info') {
+                    // Create notification element
+                    const notification = document.createElement('div');
+                    notification.className = `parent-notification ${type}`;
+                    notification.innerHTML = `
+                        <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 
+                                       type === 'warning' ? 'exclamation-triangle' : 
+                                       type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                        <span>${message}</span>
+                    `;
+                    
+                    // Add to document
+                    document.body.appendChild(notification);
+                    
+                    // Add styles if not already added
+                    if (!document.getElementById('parent-notification-styles')) {
+                        const styles = document.createElement('style');
+                        styles.id = 'parent-notification-styles';
+                        styles.textContent = `
+                            .parent-notification {
+                                position: fixed;
+                                bottom: 20px;
+                                right: 20px;
+                                padding: 15px 20px;
+                                border-radius: 10px;
+                                box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                                z-index: 10000;
+                                animation: slideInUp 0.3s ease;
+                                max-width: 350px;
+                                font-weight: 500;
+                                backdrop-filter: blur(10px);
+                            }
+                            
+                            .parent-notification.info {
+                                background: rgba(255, 209, 102, 0.2);
+                                color: #856404;
+                                border-left: 4px solid #FFD166;
+                            }
+                            
+                            .parent-notification.warning {
+                                background: rgba(255, 193, 7, 0.2);
+                                color: #856404;
+                                border-left: 4px solid #ffc107;
+                            }
+                            
+                            .parent-notification.success {
+                                background: rgba(40, 167, 69, 0.2);
+                                color: #155724;
+                                border-left: 4px solid #28a745;
+                            }
+                            
+                            .parent-notification.error {
+                                background: rgba(220, 53, 69, 0.2);
+                                color: #721c24;
+                                border-left: 4px solid #dc3545;
+                            }
+                        `;
+                        document.head.appendChild(styles);
+                    }
+                    
+                    // Auto remove after 5 seconds
+                    setTimeout(() => {
+                        notification.style.animation = 'slideOutDown 0.3s ease';
+                        setTimeout(() => {
+                            if (notification.parentNode) {
+                                notification.parentNode.removeChild(notification);
+                            }
+                        }, 300);
+                    }, 5000);
+                },
+                
+                // Logout
+                logout: function() {
+                    if (confirm('Are you sure you want to logout?')) {
+                        // Clear session data
+                        localStorage.removeItem('parentLoggedIn');
+                        localStorage.removeItem('parentId');
+                        localStorage.removeItem('parentName');
+                        localStorage.removeItem('parentLoginTime');
+                        
+                        // Redirect to login page
+                        window.location.href = 'parent.html';
+                    }
+                }
+            };
+            
+            // Initialize on DOM load
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    ParentDashboard.init();
+                });
+            } else {
+                ParentDashboard.init();
+            }
+            
+            // Export to global scope
+            window.ParentDashboard = ParentDashboard;
+        })();
+    </script>
+</body>
+</html>
